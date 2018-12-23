@@ -3,27 +3,28 @@
  */
 class Report {
     constructor(spans) {
-        this._spans = spans
-        this._spansByUUID = {}
-        this._spansByTag = {}
-        this._debugSpans = []
-        this._unfinishedSpans = []
-        for (let span of this._spans) {
+        this.spans = spans
+        this.spansByUUID = {}
+        this.spansByTag = {}
+        this.debugSpans = []
+        this.unfinishedSpans = []
+        for (let span of this.spans) {
             if (span._finishMs === 0) {
-                this._unfinishedSpans.push(span)
+                this.unfinishedSpans.push(span)
             }
-            this._spansByUUID[span.uuid()] = span
-            this._debugSpans.push(span.debug())
-            for (let key of Object.keys(span.tags())) {
+            this.spansByUUID[span.uuid()] = span
+            this.debugSpans.push(span.debug())
+            let tags = span.tags()
+            for (let key of Object.keys(tags)) {
                 var value = tags[key]
-                this._spansByTag[key] = this._spansByTag[key] || {}
-                this._spansByTag[key][value] = this._spansByTag[key][value] || []
-                this._spansByTag[key][value].push(span)
+                this.spansByTag[key] = this.spansByTag[key] || {}
+                this.spansByTag[key][value] = this.spansByTag[key][value] || []
+                this.spansByTag[key][value].push(span)
             }
         }
     }
     firstSpanWithTagValue(key, value) {
-        var m = this._spansByTag[key]
+        var m = this.spansByTag[key]
         if (!m) {
             return null
         }

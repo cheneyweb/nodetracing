@@ -27,7 +27,7 @@ class Span extends opentracing.Span {
         throw new Error('NOT YET IMPLEMENTED')
     }
     _addTags(map) {
-        for (let key of Object.keys(map)) {
+        for (let key in map) {
             this._tags[key] = map[key]
         }
     }
