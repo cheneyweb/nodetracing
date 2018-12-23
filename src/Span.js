@@ -6,11 +6,15 @@ const SpanContext = require('./SpanContext.js')
 class Span extends opentracing.Span {
     constructor(tracer) {
         super()
+        // 当前tracer
         this._tracer = tracer
+        // 唯一id
         this._uuid = this._generateUUID()
+        // 必须属性
+        this._operationName = ''
         this._startMs = Date.now()
         this._finishMs = 0
-        this._operationName = ''
+        // 拓展属性
         this._tags = {}
         this._logs = []
     }
@@ -38,6 +42,9 @@ class Span extends opentracing.Span {
         this._finishMs = finishTime || Date.now()
     }
     // extend method
+    tracer() {
+        return this._tracer
+    }
     uuid() {
         return this._uuid
     }
@@ -50,19 +57,21 @@ class Span extends opentracing.Span {
     tags() {
         return this._tags
     }
-    tracer() {
-        return this._tracer
+    // TODO 需要实现关联添加
+    addReference(reference) {
     }
-    addReference() {
-    }
+
     debug() {
         let obj = {
             uuid: this._uuid,
-            operation: this._operationName,
-            millis: [this._finishMs - this._startMs, this._startMs, this._finishMs]
+            operationName: this._operationName,
+            duration: [this._finishMs - this._startMs, this._startMs, this._finishMs]
         }
         if (Object.keys(this._tags).length) {
             obj.tags = this._tags
+        }
+        if (Object.keys(this._logs).length) {
+            obj.logs = this._logs
         }
         return obj
     }
