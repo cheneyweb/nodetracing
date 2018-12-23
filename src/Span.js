@@ -36,7 +36,7 @@ class Span extends opentracing.Span {
             this._tags[key] = map[key]
         }
     }
-    // 建议属性{error.kind,error.object,event,message,stack}
+    // 建议属性{error.kind,error.object,event,message,stack}，event必须
     _log(fields, timestamp = Date.now()) {
         this._logs.push({ fields, timestamp })
     }
