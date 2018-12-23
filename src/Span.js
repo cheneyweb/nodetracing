@@ -30,12 +30,14 @@ class Span extends opentracing.Span {
     _getBaggageItem(key) {
         throw new Error('NOT YET IMPLEMENTED')
     }
+    // 建议使用opentracing.Tags中的标签
     _addTags(map) {
         for (let key in map) {
             this._tags[key] = map[key]
         }
     }
-    _log(fields, timestamp) {
+    // 建议属性{error.kind,error.object,event,message,stack}
+    _log(fields, timestamp = Date.now()) {
         this._logs.push({ fields, timestamp })
     }
     _finish(finishTime) {
