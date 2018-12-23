@@ -17,6 +17,7 @@ class Span extends opentracing.Span {
         // 拓展属性
         this._tags = {}
         this._logs = []
+        this._references = []
     }
     _context() {
         return new SpanContext(this)
@@ -59,8 +60,23 @@ class Span extends opentracing.Span {
     tags() {
         return this._tags
     }
-    // TODO 需要实现关联添加
+    logs() {
+        return this._logs
+    }
+    // TODO 需要实现关联定制
     addReference(reference) {
+        // switch (reference.type()) {
+        //     case opentracing.REFERENCE_CHILD_OF:
+        //         break;
+        //     case opentracing.REFERENCE_FOLLOWS_FROM:
+        //         break;
+        //     default:
+        //         break;
+        // }
+        this._references.push(reference)
+    }
+    references() {
+        return this._references
     }
 
     debug() {
@@ -72,8 +88,11 @@ class Span extends opentracing.Span {
         if (Object.keys(this._tags).length) {
             obj.tags = this._tags
         }
-        if (Object.keys(this._logs).length) {
+        if (this._logs.length) {
             obj.logs = this._logs
+        }
+        if (this._references.length) {
+            obj.references = this._references
         }
         return obj
     }
