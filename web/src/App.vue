@@ -1,8 +1,6 @@
 <template>
-  <v-app>
-    <v-content>
-      <Layout/>
-    </v-content>
+  <v-app dark>
+    <Layout/>
   </v-app>
 </template>
 
