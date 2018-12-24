@@ -1,6 +1,5 @@
 const opentracing = require('opentracing')
 const Span = require('./Span.js')
-const Report = require('./Report.js')
 /**
  * OpenTracing Tracer implementation
  */
@@ -32,7 +31,8 @@ class Tracer extends opentracing.Tracer {
     clear() {
         this._spans = []
     }
-    report() {
+    report(reportClass) {
+        const Report = require(`./${reportClass}`)
         return new Report(this._spans)
     }
 }
