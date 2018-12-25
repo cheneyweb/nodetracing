@@ -17,7 +17,7 @@ export default new Vuex.Store({
   },
   actions: {
     async dag(state, data) {
-      const res = await axios.get(`${domain}/nodetracing/echart/dag`)
+      const res = await axios.get(`${domain}/nodetracing/echart/dag/${data.serviceName}`)
       return res.data
     },
     // async login(state, data) {

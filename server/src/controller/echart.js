@@ -8,8 +8,8 @@ const router = new Router()
 /**
  * 获取有向无环图
  */
-router.get('/dag', function (ctx, next) {
-    ctx.body = Cache.echarDAG
+router.get('/dag/:serviceName', function (ctx, next) {
+    ctx.body = Cache.serviceMap[ctx.params.serviceName].spanDAG
 })
 
 module.exports = router

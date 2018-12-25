@@ -12,8 +12,8 @@ export default {
   methods: {
     async drawDAG() {
       let res = await this.$store.dispatch("dag", {
-          serviceName: 'demo',
-        });
+        serviceName: "server-demo"
+      });
       this.$echarts.init(document.getElementById("dag")).setOption({
         backgroundColor: "gray",
         title: {

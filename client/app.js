@@ -1,7 +1,7 @@
 const nodetracing = require('./src/index.js')
 
 async function main() {
-    const tracer = new nodetracing.Tracer({ serviceName: 'demoserver' })
+    const tracer = new nodetracing.Tracer({ serviceName: 'server-demo' })
 
     let parentSpan = tracer.startSpan('parent_span')
     parentSpan.setTag('category', '根')

@@ -3,6 +3,7 @@ const Cache = require('../../cache/Cache.js')
 module.exports = {
   upload(call, cb) {
     // 1、响应客户端
+    // console.log(call.request)
     cb(null, { res: `Y` })
 
     // 2、span入池
@@ -11,12 +12,12 @@ module.exports = {
     span.tags = JSON.parse(span.tags)
     span.logs = JSON.parse(span.logs)
     span.references = JSON.parse(span.references)
-    Cache.spans.push(span)
+    Cache.spanArr.push(span)
 
-    // 3、生成报告
-    let report = new EchartReport(Cache.spans)
-    Cache.echarDAG = report.dag()
-    console.log(JSON.stringify(Cache.echarDAG))
+    // 3、满足一定条件，生成报告
+    if (Cache.spanArr.length >= 2) {
+      new EchartReport().gen()
+    }
   }
 }
 
