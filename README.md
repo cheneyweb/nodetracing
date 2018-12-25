@@ -33,3 +33,4 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 	2018.12.22:最小化实现opentracing
 	2018.12.23:report演示完成
 	2018.12.24:实现Reference，抽象Report，实现EChartReport，初步引入webui
+	2018.12.25:服务结构整理，分为client,server,web；webui采用grpc与后端交互

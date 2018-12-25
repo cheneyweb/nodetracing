@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-const domain = 'http://localhost:3636'
+const domain = 'http://localhost:10000'
 
 Vue.use(Vuex)
 

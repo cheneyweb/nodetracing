@@ -43,6 +43,8 @@ class Span extends opentracing.Span {
     }
     _finish(finishTime) {
         this._finishMs = finishTime || Date.now()
+        // 上报
+        console.log(this.report())
     }
     // extend method
     tracer() {
@@ -95,6 +97,27 @@ class Span extends opentracing.Span {
             obj.references = this._references
         }
         return obj
+    }
+    report() {
+        let references = []
+        for (let reference of this._references) {
+            references.push({
+                type: reference.type(),
+                // TODO 这里是否需要深度递归，或者是否可以只返回单层关系？
+                referencedContext: reference.referencedContext().span().report()
+            })
+        }
+        return {
+            tracer: JSON.stringify(this._tracer.info()),
+            uuid: this._uuid,
+            operationName: this._operationName,
+            startMs: this._startMs,
+            finishMs: this._finishMs,
+            durationMs: this._finishMs - this._startMs,
+            tags: JSON.stringify(this._tags),
+            logs: JSON.stringify(this._logs),
+            references: JSON.stringify(references)
+        }
     }
 
     _generateUUID() {

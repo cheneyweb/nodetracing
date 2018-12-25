@@ -4,8 +4,10 @@ const Span = require('./Span.js')
  * OpenTracing Tracer implementation
  */
 class Tracer extends opentracing.Tracer {
-    constructor() {
+    constructor(config) {
         super()
+        this._config = config
+        this.serviceName = config.serviceName
         this._spans = []
     }
     _startSpan(name, options) {
@@ -34,6 +36,9 @@ class Tracer extends opentracing.Tracer {
     report(reportClass) {
         const Report = require(`./${reportClass}`)
         return new Report(this._spans)
+    }
+    info() {
+        return this._config
     }
 }
 

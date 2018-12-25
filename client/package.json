@@ -1,5 +1,5 @@
 {
-  "name": "nodetracing",
+  "name": "nodetracing-client",
   "version": "0.1.0",
   "description": "完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
   "main": "app.js",
@@ -9,6 +9,8 @@
   "author": "cheneyxu",
   "license": "ISC",
   "dependencies": {
-    "opentracing": "^0.14.3"
+    "opentracing": "^0.14.3",
+    "x-grpc": "^0.9.1",
+    "config": "^3.0.1"
   }
 }

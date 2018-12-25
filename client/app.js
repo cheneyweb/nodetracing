@@ -2,7 +2,7 @@ const nodetracing = require('./src/index.js')
 
 async function main() {
     console.log('nodetracing自动探针启动...')
-    const tracer = new nodetracing.Tracer()
+    const tracer = new nodetracing.Tracer({ serviceName: 'demoserver' })
 
     let parentSpan = tracer.startSpan('parent_span')
     parentSpan.setTag('category', '根')
@@ -12,7 +12,7 @@ async function main() {
     let childSpan = tracer.startSpan('child_span', { childOf: parentSpan })
     childSpan.setTag('category', '注册')
     childSpan.log({ event: 'waiting' })
-    
+
     await waitASecond(500)
 
     childSpan.log({ event: 'done' })

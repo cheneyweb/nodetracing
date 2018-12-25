@@ -1,0 +1,24 @@
+syntax = "proto3";
+package tracer;
+
+// 服务定义
+service Span {
+  rpc upload (UploadReq) returns (UploadRes) {}
+}
+
+// 请求返回定义
+message UploadReq {
+  string tracer = 1;        // json:{}
+  string uuid = 2;
+  string operationName = 3;
+  string startMs = 4;
+  string finishMs = 5;
+  string tags = 6;          // json:{}
+  string logs = 7;          // json:{}
+  string references = 8;    // json:{}
+}
+
+message UploadRes {
+  string code = 1;
+  string res = 2;
+}
