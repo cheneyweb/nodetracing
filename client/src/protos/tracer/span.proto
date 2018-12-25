@@ -4,7 +4,6 @@ package tracer;
 // 服务定义
 service Span {
   rpc upload (UploadReq) returns (UploadRes) {}
-  
 }
 
 // 请求返回定义

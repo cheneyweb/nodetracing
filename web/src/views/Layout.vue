@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" clipped fixed app width=200>
+    <v-navigation-drawer v-model="drawer" clipped fixed app width="200">
       <v-list dense>
         <v-list-tile>
           <v-list-tile-action>
@@ -31,13 +31,14 @@
     <v-toolbar app fixed clipped-left dense>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>NodeTracing</v-toolbar-title>
+      <img src="../assets/logo_white.png">
     </v-toolbar>
     <v-content>
       <router-view/>
     </v-content>
     <!-- <v-footer app fixed>
       <div>2018-2019 &copy; CheneyXu</div>
-    </v-footer> -->
+    </v-footer>-->
   </div>
 </template>
 

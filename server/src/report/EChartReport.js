@@ -12,15 +12,15 @@ class EChartReport extends Report {
         let categories = []
         let legendData = []
         for (let span of this.spans) {
-            let category = span.tags()['category']
+            let category = span.tags['category']
             data.push({
-                name: span.operationName(),
+                name: span.operationName,
                 category
             })
-            for (let reference of span.references()) {
+            for (let reference of span.references) {
                 links.push({
-                    source: reference.referencedContext().span().operationName(),
-                    target: span.operationName(),
+                    source: reference.referencedContext.operationName,
+                    target: span.operationName,
                     category
                 })
             }

@@ -10,7 +10,10 @@ export default {
     this.drawDAG();
   },
   methods: {
-    drawDAG() {
+    async drawDAG() {
+      let res = await this.$store.dispatch("dag", {
+          serviceName: 'demo',
+        });
       this.$echarts.init(document.getElementById("dag")).setOption({
         backgroundColor: "gray",
         title: {
@@ -46,31 +49,9 @@ export default {
                 curveness: 0
               }
             },
-            data: [
-              {
-                name: "parent_span",
-                category: "根"
-              },
-              {
-                name: "child_span",
-                category: "注册"
-              }
-            ],
-            links: [
-              {
-                source: "parent_span",
-                target: "child_span",
-                category: "注册"
-              }
-            ],
-            categories: [
-              {
-                name: "根"
-              },
-              {
-                name: "注册"
-              }
-            ],
+            data: res.data,
+            links: res.links,
+            categories: res.categories,
             layout: "force",
             symbolSize: 25,
             force: {
@@ -81,11 +62,7 @@ export default {
             focusNodeAdjacency: true
           }
         ],
-        legend: [
-          {
-            data: ["根", "注册"]
-          }
-        ],
+        legend: res.legend,
         tooltip: {
           formatter: function(param) {
             if (param.dataType === "edge") {

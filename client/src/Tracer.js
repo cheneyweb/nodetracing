@@ -1,5 +1,8 @@
 const opentracing = require('opentracing')
 const Span = require('./Span.js')
+
+const rpcconfig = require('config')
+const RPCClient = require('x-grpc').RPCClient
 /**
  * OpenTracing Tracer implementation
  */
@@ -9,6 +12,11 @@ class Tracer extends opentracing.Tracer {
         this._config = config
         this.serviceName = config.serviceName
         this._spans = []
+
+        new RPCClient(rpcconfig.grpc).connect().then((rpc) => {
+            this._rpc = rpc
+            console.info(`NodeTracing客户端已连接服务节点【执行环境:${process.env.NODE_ENV},端口:${rpcconfig.grpc.port}】`)
+        })
     }
     _startSpan(name, options) {
         let span = new Span(this)
@@ -33,13 +41,13 @@ class Tracer extends opentracing.Tracer {
     clear() {
         this._spans = []
     }
-    report(reportClass) {
-        const Report = require(`./${reportClass}`)
-        return new Report(this._spans)
-    }
     info() {
         return this._config
     }
+    // report(reportClass) {
+    //     const Report = require(`./${reportClass}`)
+    //     return new Report(this._spans)
+    // }
 }
 
 module.exports = Tracer

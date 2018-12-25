@@ -1,0 +1,4 @@
+module.exports = {
+    spans: [],
+    echarDAG: {}
+}

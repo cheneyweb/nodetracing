@@ -4,5 +4,11 @@
         "protosDir": "/src/protos/",
         "implsDir": "/src/impls/",
         "serverAddress": "localhost"
+    },
+    "server": {
+        "port": 3636,
+        "staticRoot": "/xserver/static/",
+        "controllerRoot": "/nodetracing",
+        "controllerDir": "/src/controller/"
     }
 }
