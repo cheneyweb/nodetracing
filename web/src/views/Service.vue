@@ -2,7 +2,7 @@
   <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs12>
-        <v-select :items="items" v-model="select"></v-select>
+        <v-select :items="services" v-model="selectedService" @change="changeService"></v-select>
       </v-flex>
       <v-flex xs12>
         <div id="dag" style="width:100%;height:600px"></div>
@@ -14,21 +14,28 @@
 <script>
 export default {
   data: () => ({
-    select: "service-demo",
-    items: ["service-demo", "service-demo2"]
+    selectedService: "",
+    services: []
   }),
   mounted() {
-    this.drawDAG();
+    this.getAllService();
   },
   methods: {
-    async drawDAG() {
-      let res = await this.$store.dispatch("spanDAG", {
-        serviceName: "server-demo"
-      });
+    async getAllService() {
+      let res = await this.$store.dispatch("allservice", {});
+      this.services = res;
+      this.selectedService = this.services[0];
+      this.changeService(this.selectedService);
+    },
+    async changeService(e) {
+      this.drawDAG(e);
+    },
+    async drawDAG(serviceName) {
+      let res = await this.$store.dispatch("spanDAG", { serviceName });
       this.$echarts.init(document.getElementById("dag")).setOption({
         backgroundColor: "gray",
         title: {
-          text: `【${this.select}】 Spans DAG`
+          text: `【${serviceName}】 Spans DAG`
         },
         series: [
           {

@@ -21,7 +21,25 @@ router.get('/dag/:serviceName', function (ctx, next) {
 })
 
 /**
- * 获取单服务所有Span线
+ * 获取所有服务
+ */
+router.get('/service', function (ctx, next) {
+    ctx.body = Array.from(Cache.serviceSet)
+})
+
+/**
+ * 获取单服务所有Operation
+ */
+router.get('/operation/:serviceName', function (ctx, next) {
+    let operationArr = []
+    for (let key in Cache.serviceMap[ctx.params.serviceName].rootSpanMap) {
+        operationArr.push(key)
+    }
+    ctx.body = operationArr
+})
+
+/**
+ * 获取单Operation所有根Span线
  */
 router.get('/operation/:serviceName/:operationName', function (ctx, next) {
     let rootSpanArr = []
