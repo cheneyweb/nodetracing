@@ -26,7 +26,7 @@
             <v-list-tile-title>Service</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile to="/endpoint">
+        <v-list-tile to="/operation">
           <v-list-tile-action>
             <v-icon>view_list</v-icon>
           </v-list-tile-action>

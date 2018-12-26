@@ -21,20 +21,32 @@ export default new Vuex.Store({
       return res.data
     },
     async spanDAG(state, data) {
-      const res = await axios.get(`${domain}/nodetracing/echart/dag/${data.serviceName}`)
+      if (data.serviceName) {
+        const res = await axios.get(`${domain}/nodetracing/echart/dag/${data.serviceName}`)
+        return res.data
+      } else {
+        return {}
+      }
+    },
+    async getServices() {
+      const res = await axios.get(`${domain}/nodetracing/service`)
       return res.data
     },
-    async allservice(){
-      const res = await axios.get(`${domain}/nodetracing/echart/service`)
-      return res.data
+    async getServiceOperations(state, data) {
+      if (data.serviceName) {
+        const res = await axios.get(`${domain}/nodetracing/operation/${data.serviceName}`)
+        return res.data
+      } else {
+        return []
+      }
     },
-    async serviceOperation(state, data) {
-      const res = await axios.get(`${domain}/nodetracing/echart/operation/${data.serviceName}`)
-      return res.data
-    },
-    async operationSpan(state, data) {
-      const res = await axios.get(`${domain}/nodetracing/echart/operation/${data.serviceName}/${data.operationName}`)
-      return res.data
+    async getOperationSpans(state, data) {
+      if (data.serviceName && data.operationName) {
+        const res = await axios.get(`${domain}/nodetracing/operation/${data.serviceName}/${data.operationName}`)
+        return res.data
+      } else {
+        return []
+      }
     },
 
     // async login(state, data) {

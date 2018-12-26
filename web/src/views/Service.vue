@@ -18,18 +18,22 @@ export default {
     services: []
   }),
   mounted() {
-    this.getAllService();
+    this.getServices();
   },
   methods: {
-    async getAllService() {
-      let res = await this.$store.dispatch("allservice", {});
+    // 获取所有服务节点
+    async getServices() {
+      let res = await this.$store.dispatch("getServices", {});
       this.services = res;
+      // 默认选中第一个服务节点
       this.selectedService = this.services[0];
       this.changeService(this.selectedService);
     },
+    // 切换服务节点
     async changeService(e) {
       this.drawDAG(e);
     },
+    // 绘制DAG
     async drawDAG(serviceName) {
       let res = await this.$store.dispatch("spanDAG", { serviceName });
       this.$echarts.init(document.getElementById("dag")).setOption({

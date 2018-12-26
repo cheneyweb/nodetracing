@@ -21,17 +21,17 @@ export default new Router({
     // },
     {
       path: '/topology',
-      name: 'login',
+      name: 'topology',
       component: Topology
     },
     {
       path: '/service',
-      name: 'login',
+      name: 'service',
       component: Service
     },
     {
-      path: '/endpoint',
-      name: 'login',
+      path: '/operation',
+      name: 'operation',
       component: Operation
     }
   ]

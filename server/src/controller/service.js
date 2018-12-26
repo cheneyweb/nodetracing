@@ -7,17 +7,10 @@ const Router = require('koa-router')
 const router = new Router()
 
 /**
- * 获取所有服务节点有向无环图
+ * 获取所有服务
  */
-router.get('/dag', function (ctx, next) {
-    ctx.body = Cache.serviceDAG
-})
-
-/**
- * 获取单服务Span有向无环图
- */
-router.get('/dag/:serviceName', function (ctx, next) {
-    ctx.body = Cache.serviceMap[ctx.params.serviceName].spanDAG
+router.get('/', function (ctx, next) {
+    ctx.body = Array.from(Cache.serviceSet)
 })
 
 module.exports = router
