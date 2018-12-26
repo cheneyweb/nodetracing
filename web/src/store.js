@@ -24,6 +24,10 @@ export default new Vuex.Store({
       const res = await axios.get(`${domain}/nodetracing/echart/dag/${data.serviceName}`)
       return res.data
     },
+    async operation(state, data) {
+      const res = await axios.get(`${domain}/nodetracing/echart/operation/${data.serviceName}/${data.operationName}`)
+      return res.data
+    },
     // async login(state, data) {
     //   const res = await axios.post(`${domain}/gserver/auth/login`, data)
     //   return res.data

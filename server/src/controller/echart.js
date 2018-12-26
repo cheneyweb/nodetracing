@@ -23,8 +23,16 @@ router.get('/dag/:serviceName', function (ctx, next) {
 /**
  * 获取单服务所有Span线
  */
-router.get('/line/:serviceName', function (ctx, next) {
-    ctx.body = Cache.serviceMap[ctx.params.serviceName].spanDAG
+router.get('/operation/:serviceName/:operationName', function (ctx, next) {
+    let rootSpanArr = []
+    for (let rootSpan of Cache.serviceMap[ctx.params.serviceName].rootSpanMap[ctx.params.operationName]) {
+        rootSpanArr.push({
+            operationName: rootSpan.operationName,
+            duration: rootSpan.finishMs - rootSpan.startMs
+        })
+    }
+
+    ctx.body = rootSpanArr
 })
 
 module.exports = router

@@ -3,7 +3,7 @@ import Router from 'vue-router'
 // import Login from './views/Login.vue'
 import Topology from './views/Topology.vue'
 import Service from './views/Service.vue'
-import Endpoint from './views/Endpoint.vue'
+import Operation from './views/Operation.vue'
 
 Vue.use(Router)
 
@@ -32,7 +32,7 @@ export default new Router({
     {
       path: '/endpoint',
       name: 'login',
-      component: Endpoint
+      component: Operation
     }
   ]
 })

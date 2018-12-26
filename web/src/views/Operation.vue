@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height>
+  <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs6>
         <v-select :items="services" v-model="selectService"></v-select>
@@ -10,13 +10,13 @@
       <v-flex xs12>
         <v-data-table :headers="headers" :items="items" hide-actions>
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.name }}</td>
+            <td class="text-xs-left">{{ props.item.operationName }}</td>
             <td>
               <v-layout>
                 <v-flex xs11>
                   <v-progress-linear color="error" height="20" value="75"></v-progress-linear>
                 </v-flex>
-                <v-flex xs1 align-self-center>{{ props.item.duration }}</v-flex>
+                <v-flex xs1 align-self-center>{{ props.item.duration }}ms</v-flex>
               </v-layout>
             </td>
           </template>
@@ -30,26 +30,34 @@
 export default {
   data() {
     return {
-      services:["service-demo"],
-      names:["HelloWorld"],
+      services: ["service-demo"],
+      names: ["HelloWorld"],
+      selectService: "service-demo",
+      selectName: "HelloWorld",
       headers: [
         {
-          text: "Name",
+          text: "Operation",
           align: "left",
           sortable: false,
-          value: "name",
+          value: "operationName",
           width: "300"
         },
         { text: "Duration", value: "duration" }
       ],
-      items: [
-        {
-          value: false,
-          name: "HelloWrold",
-          duration: "159ms"
-        }
-      ]
+      items: []
     };
+  },
+  created() {
+    this.getOperation();
+  },
+  methods: {
+    async getOperation() {
+      let res = await this.$store.dispatch("operation", {
+        serviceName: "server-demo",
+        operationName: "parent_span"
+      });
+      this.items = res;
+    }
   }
 };
 </script>
