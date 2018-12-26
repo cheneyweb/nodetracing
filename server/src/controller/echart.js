@@ -5,10 +5,25 @@ const Router = require('koa-router')
 // const log = require('tracer').colorConsole({ level: require('config').get('log').level })
 // 初始化路由
 const router = new Router()
+
 /**
- * 获取有向无环图
+ * 获取所有服务节点有向无环图
+ */
+router.get('/dag', function (ctx, next) {
+    ctx.body = Cache.serviceDAG
+})
+
+/**
+ * 获取单服务Span有向无环图
  */
 router.get('/dag/:serviceName', function (ctx, next) {
+    ctx.body = Cache.serviceMap[ctx.params.serviceName].spanDAG
+})
+
+/**
+ * 获取单服务所有Span线
+ */
+router.get('/line/:serviceName', function (ctx, next) {
     ctx.body = Cache.serviceMap[ctx.params.serviceName].spanDAG
 })
 

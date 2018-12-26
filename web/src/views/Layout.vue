@@ -10,12 +10,28 @@
             <v-list-tile-title>Dashboard</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile to="/topology">
           <v-list-tile-action>
             <v-icon>device_hub</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Topology</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile to="/service">
+          <v-list-tile-action>
+            <v-icon>scatter_plot</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Service</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile to="/endpoint">
+          <v-list-tile-action>
+            <v-icon>view_list</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Endpoint</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile>

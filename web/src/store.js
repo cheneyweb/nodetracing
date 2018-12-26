@@ -16,7 +16,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async dag(state, data) {
+    async serviceDAG(state, data) {
+      const res = await axios.get(`${domain}/nodetracing/echart/dag`)
+      return res.data
+    },
+    async spanDAG(state, data) {
       const res = await axios.get(`${domain}/nodetracing/echart/dag/${data.serviceName}`)
       return res.data
     },

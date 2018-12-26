@@ -1,23 +1,34 @@
 <template>
-  <v-container fill-height justify-center pa-0 pt-4>
-    <div id="dag" style="width:100%;height:600px"></div>
+  <v-container fluid fill-height pt-0>
+    <v-layout wrap>
+      <v-flex xs12>
+        <v-select :items="items" v-model="select"></v-select>
+      </v-flex>
+      <v-flex xs12>
+        <div id="dag" style="width:100%;height:600px"></div>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
 export default {
+  data: () => ({
+    select: "service-demo",
+    items: ["service-demo", "service-demo2"]
+  }),
   mounted() {
     this.drawDAG();
   },
   methods: {
     async drawDAG() {
-      let res = await this.$store.dispatch("dag", {
+      let res = await this.$store.dispatch("spanDAG", {
         serviceName: "server-demo"
       });
       this.$echarts.init(document.getElementById("dag")).setOption({
         backgroundColor: "gray",
         title: {
-          text: "DAG Topology Graph"
+          text: `【${this.select}】 Spans DAG`
         },
         series: [
           {
