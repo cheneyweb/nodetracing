@@ -18,6 +18,8 @@ class Span extends opentracing.Span {
         this._tags = {}
         this._logs = []
         this._references = []
+        this._origin = null      // 起源
+        this._depth = 0          // 深度
     }
     _context() {
         return new SpanContext(this)
@@ -110,6 +112,8 @@ class Span extends opentracing.Span {
                 referencedContext: reference.referencedContext().span().report()
             })
         }
+        // 计算自己的深度和起源
+        this._calcDepth(this._references)
         return {
             tracer: JSON.stringify(this._tracer.info()),
             uuid: this._uuid,
@@ -119,7 +123,9 @@ class Span extends opentracing.Span {
             durationMs: this._finishMs - this._startMs,
             tags: JSON.stringify(this._tags),
             logs: JSON.stringify(this._logs),
-            references: JSON.stringify(references)
+            references: JSON.stringify(references),
+            originId: this._origin && this._origin.uuid,
+            depth: this.depth
         }
     }
 
@@ -127,6 +133,17 @@ class Span extends opentracing.Span {
         let p0 = ("00000000" + Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)).substr(-8)
         let p1 = ("00000000" + Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)).substr(-8)
         return `${p0}${p1}`
+    }
+    _calcDepth(references) {
+        for (let reference of references) {
+            let span = reference.referencedContext().span()
+            if (span.references.length > 0) {
+                this._calcDepth(span.references)
+            } else {
+                this.origin = span
+            }
+        }
+        this._depth++
     }
 }
 

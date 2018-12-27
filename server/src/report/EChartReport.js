@@ -10,16 +10,22 @@ class EChartReport extends Report {
     // 生成报告
     gen() {
         const spanArr = Cache.spanArr
+        const spanMap = Cache.spanMap
+        const spanTracerMap = Cache.spanTracerMap
         const serviceSet = Cache.serviceSet
         const serviceMap = Cache.serviceMap
         const serviceDAG = Cache.serviceDAG
         for (let span of spanArr) {
+            // Map加入span
+            spanMap[span.uuid] = span
             // 获取serviceName
             let serviceName = span.tracer.serviceName
             // 获取service
             let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: [{ data: [] }] } }
             // 筛选根span
             filterRootSpan(service, span)
+            // 跟踪根span
+            joinSpan(spanTracerMap, span)
             // 绘制service的spanDAG
             let serviceReferenceArr = drawSpanDAG(service, span)
             // 绘制serviceDAG
@@ -39,6 +45,17 @@ function filterRootSpan(service, span) {
     if (span.references.length == 0) {
         service.rootSpanMap[span.operationName] = service.rootSpanMap[span.operationName] || []
         service.rootSpanMap[span.operationName].push(span)
+    }
+}
+// 从根span出发，跟踪关联所有span集合
+function joinSpan(spanTracerMap, span) {
+    if (span.references.length == 0) {
+        spanTracerMap[span.uuid] = spanTracerMap[span.uuid] || { depth: 0, spanArr: [span] }
+    } else if (spanTracerMap[span.originId]) {
+        if (spanTracerMap[span.originId].depth < span.depth) {
+            spanTracerMap[span.originId].depth = span.depth
+        }
+        spanTracerMap[span.originId].spanArr.push(span)
     }
 }
 // 绘制所有服务拓扑图

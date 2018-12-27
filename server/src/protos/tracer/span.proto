@@ -16,6 +16,8 @@ message UploadReq {
   string tags = 6;          // json:{}
   string logs = 7;          // json:{}
   string references = 8;    // json:{}
+  string originId = 9;
+  int32 depth = 10;
 }
 
 message UploadRes {

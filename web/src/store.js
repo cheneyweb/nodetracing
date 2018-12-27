@@ -48,7 +48,14 @@ export default new Vuex.Store({
         return []
       }
     },
-
+    async getTracerSpans(state, data) {
+      if (data.spanId) {
+        const res = await axios.get(`${domain}/nodetracing/span/tracer/${data.spanId}`)
+        return res.data
+      } else {
+        return []
+      }
+    }
     // async login(state, data) {
     //   const res = await axios.post(`${domain}/gserver/auth/login`, data)
     //   return res.data
