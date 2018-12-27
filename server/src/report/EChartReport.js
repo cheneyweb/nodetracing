@@ -17,9 +17,9 @@ class EChartReport extends Report {
         const serviceDAG = Cache.serviceDAG
         for (let span of spanArr) {
             // Map加入span
-            spanMap[span.uuid] = span
+            spanMap[span.id] = span
             // 获取serviceName
-            let serviceName = span.tracer.serviceName
+            let serviceName = span.serviceName
             // 获取service
             let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: [{ data: [] }] } }
             // 筛选根span
@@ -35,8 +35,9 @@ class EChartReport extends Report {
         }
         // 重置span池
         Cache.spanArr = []
-        // console.log(JSON.stringify(Cache.serviceDAG))
-        console.log(JSON.stringify(serviceMap))
+        console.log(spanTracerMap)
+        // console.log(JSON.stringify(serviceMap))
+        // console.log(JSON.stringify(serviceDAG))
     }
 }
 
@@ -50,7 +51,7 @@ function filterRootSpan(service, span) {
 // 从根span出发，跟踪关联所有span集合
 function joinSpan(spanTracerMap, span) {
     if (span.references.length == 0) {
-        spanTracerMap[span.uuid] = spanTracerMap[span.uuid] || { depth: 0, spanArr: [span] }
+        spanTracerMap[span.id] = spanTracerMap[span.id] || { depth: 0, spanArr: [span] }
     } else if (spanTracerMap[span.originId]) {
         if (spanTracerMap[span.originId].depth < span.depth) {
             spanTracerMap[span.originId].depth = span.depth
@@ -111,8 +112,8 @@ function drawSpanDAG(service, span) {
                 category
             })
             serviceReferenceArr.push({
-                source: reference.referencedContext.tracer.serviceName,
-                target: span.tracer.serviceName
+                source: reference.referencedContext.serviceName,
+                target: span.serviceName
             })
         }
         // 类目

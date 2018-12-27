@@ -8,7 +8,7 @@ module.exports = {
 
     // 2、span入池
     let span = call.request
-    span.tracer = JSON.parse(span.tracer)
+    // span.tracer = JSON.parse(span.tracer)
     span.tags = JSON.parse(span.tags)
     span.logs = JSON.parse(span.logs)
     span.references = JSON.parse(span.references)

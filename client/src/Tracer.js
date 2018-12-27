@@ -9,9 +9,9 @@ const RPCClient = require('x-grpc').RPCClient
 class Tracer extends opentracing.Tracer {
     constructor(config) {
         super()
+        this._spans = []
         this._config = config
         this.serviceName = config.serviceName
-        this._spans = []
 
         new RPCClient(rpcconfig.grpc).connect().then((rpc) => {
             this._rpc = rpc

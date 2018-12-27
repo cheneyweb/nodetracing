@@ -5,10 +5,26 @@ const opentracing = require('opentracing')
 class SpanContext extends opentracing.SpanContext {
     constructor(span) {
         super()
-        this._span = span
-    }
-    span() {
-        return this._span
+        let references = []
+        for (let reference of span._references) {
+            references.push({
+                type: reference.type(),
+                // TODO 这里是否需要深度递归，或者是否可以只返回单层关系？
+                referencedContext: reference.referencedContext()
+            })
+        }
+        this.serviceName = span.serviceName
+        this.id = span.id
+        this.operationName = span.operationName
+        this.startMs = span.startMs
+        this.finishMs = span.finishMs
+        this.durationMs = span.durationMs
+        this.tags = JSON.stringify(span.tags)
+        this.logs = JSON.stringify(span.logs)
+        this.references = JSON.stringify(references)
+        this.originId = span.originId
+        this.parentId = span.parentId
+        this.depth = span.depth
     }
 }
 
