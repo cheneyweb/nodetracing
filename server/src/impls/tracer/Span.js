@@ -6,16 +6,22 @@ module.exports = {
     // console.log(call.request)
     cb(null, { res: `Y` })
 
-    // 2、span入池
+    // 2、span压入队列
     let span = call.request
     // span.tracer = JSON.parse(span.tracer)
     span.tags = JSON.parse(span.tags)
     span.logs = JSON.parse(span.logs)
     span.references = JSON.parse(span.references)
-    Cache.spanArr.push(span)
+    Cache.spanQueue.push(span)
 
     // 3、满足一定条件，生成报告
-    if (Cache.spanArr.length >= 2) {
+    let spanCount = Cache.spanQueue.length
+    if (Cache.spanArr.length == 0 && spanCount >= 2) {
+      // 队列出队，进入处理池
+      for (i = 0; i < spanCount; i++) {
+        Cache.spanArr.push(Cache.spanQueue.shift())
+      }
+      // 使用处理池内的数据生成报告
       new EchartReport().gen()
     }
   }

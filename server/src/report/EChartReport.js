@@ -25,7 +25,7 @@ class EChartReport extends Report {
             // 筛选根span
             filterRootSpan(service, span)
             // 跟踪根span
-            joinSpan(spanTracerMap, span)
+            tracerRootSpan(spanTracerMap, span)
             // 绘制service的spanDAG
             let serviceReferenceArr = drawSpanDAG(service, span)
             // 绘制serviceDAG
@@ -35,7 +35,7 @@ class EChartReport extends Report {
         }
         // 重置span池
         Cache.spanArr = []
-        console.log(spanTracerMap)
+        // console.log(JSON.stringify(spanTracerMap))
         // console.log(JSON.stringify(serviceMap))
         // console.log(JSON.stringify(serviceDAG))
     }
@@ -43,19 +43,32 @@ class EChartReport extends Report {
 
 // 筛选根span
 function filterRootSpan(service, span) {
-    if (span.references.length == 0) {
+    if (span.depth == 0) {
         service.rootSpanMap[span.operationName] = service.rootSpanMap[span.operationName] || []
         service.rootSpanMap[span.operationName].push(span)
     }
 }
 // 从根span出发，跟踪关联所有span集合
-function joinSpan(spanTracerMap, span) {
-    if (span.references.length == 0) {
-        spanTracerMap[span.id] = spanTracerMap[span.id] || { depth: 0, spanArr: [span] }
-    } else if (spanTracerMap[span.originId]) {
+function tracerRootSpan(spanTracerMap, span) {
+    // 接收根span，完善数组首位
+    if (span.depth == 0) {
+        if (!spanTracerMap[span.originId]) {
+            spanTracerMap[span.originId] = { depth: 0, spanArr: [span] }
+        } else {
+            spanTracerMap[span.originId].spanArr[0] = span
+        }
+    }
+    // 非根span，加入跟踪队列
+    else {
+        // 若根span未到达，先虚拟
+        if (!spanTracerMap[span.originId]) {
+            spanTracerMap[span.originId] = { depth: 0, spanArr: [{ id: span.originId }] }
+        }
+        // 更新跟踪深度
         if (spanTracerMap[span.originId].depth < span.depth) {
             spanTracerMap[span.originId].depth = span.depth
         }
+        // 跟踪集合增加
         spanTracerMap[span.originId].spanArr.push(span)
     }
 }

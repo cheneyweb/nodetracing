@@ -1,5 +1,6 @@
 module.exports = {
     // span池
+    spanQueue: [],
     spanArr: [],
     spanMap: {},
     spanTracerMap: {},

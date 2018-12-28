@@ -8,9 +8,9 @@ async function main() {
 
     await phase1(parentSpan)
 
-    parentSpan = await phase2(parentSpan)
+    parentSpan2 = await phase2(parentSpan)
 
-    phase3(parentSpan)
+    phase3(parentSpan2)
 
     parentSpan.finish()
 }
