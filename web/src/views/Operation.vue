@@ -219,7 +219,7 @@ export default {
           }
         );
       }
-      let option = {
+      this.$echarts.init(document.getElementById("gantt")).setOption({
         color: colors,
         backgroundColor: "gray",
         tooltip: {
@@ -296,8 +296,7 @@ export default {
           top: 40
         },
         series
-      };
-      this.$echarts.init(document.getElementById("gantt")).setOption(option);
+      });
     }
   }
 };
