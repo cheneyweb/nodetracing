@@ -63,7 +63,18 @@ export default {
                 }
               }
             },
+            edgeSymbol: ["circle", "arrow"],
+            edgeSymbolSize: [10, 10],
             type: "graph",
+            layout: "force",
+            force: {
+              // repulsion: 100,
+              // gravity: 100,
+              // initLayout: 'circular',
+              repulsion: 60,
+              // edgeLength: 2
+            },
+            draggable:true,
             lineStyle: {
               normal: {
                 opacity: 0.9,
