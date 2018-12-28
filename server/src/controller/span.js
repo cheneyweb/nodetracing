@@ -11,23 +11,21 @@ const _ = require('lodash')
  * 跟踪根Span
  */
 router.get('/tracer/:spanId', function (ctx, next) {
-    let spans = _.orderBy(Cache.spanTracerMap[ctx.params.spanId], ['depth', 'startMs'])
-    console.log(spans)
+    let serviceArr = Array.from(Cache.serviceSet)
+    let depth = Cache.spanTracerMap[ctx.params.spanId].depth
+    let spans = _.orderBy(Cache.spanTracerMap[ctx.params.spanId].spanArr, ['depth', 'startMs'])
     let spanArr = []
     for (let span of spans) {
         spanArr.push({
-            uuid: span.uuid,
+            id: span.id,
             operationName: span.operationName,
             startMs: span.startMs,
             finishMs: span.finishMs,
-            duration: span.duration,
-            serviceName: span.tracer.serviceName
+            durationMs: span.durationMs,
+            serviceName: span.serviceName
         })
     }
-    // 递归根span的所有关系
-    // getRefSpan(spanArr, rootSpan)
-    console.log(spanArr)
-    ctx.body = spanArr
+    ctx.body = { depth, serviceArr, spanArr: spanArr }
 })
 
 // 递归根span所有关系
@@ -35,7 +33,7 @@ router.get('/tracer/:spanId', function (ctx, next) {
 //     for (reference of span.references) {
 //         let refSpan = reference.referencedContext.span
 //         spanArr.push({
-//             uuid: refSpan.uuid,
+//             id: refSpan.id,
 //             operationName: refSpan.operationName,
 //             startMs: refSpan.startMs,
 //             finishMs: refSpan.finishMs,

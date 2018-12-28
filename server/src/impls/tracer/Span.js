@@ -12,6 +12,8 @@ module.exports = {
     span.tags = JSON.parse(span.tags)
     span.logs = JSON.parse(span.logs)
     span.references = JSON.parse(span.references)
+    span.startMs = +span.startMs
+    span.finishMs = +span.finishMs
     Cache.spanQueue.push(span)
 
     // 3、满足一定条件，生成报告

@@ -12,11 +12,11 @@
           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
             <td
-              @click="spanDetail(props.item.uuid)"
+              @click="spanDetail(props.item.id)"
               class="text-xs-left"
             >{{ props.item.operationName }}</td>
-            <td @click="spanDetail(props.item.uuid)">{{ props.item.uuid }}</td>
-            <td @click="spanDetail(props.item.uuid)">
+            <td @click="spanDetail(props.item.id)">{{ props.item.id }}</td>
+            <td @click="spanDetail(props.item.id)">
               <v-layout>
                 <v-flex xs11>
                   <v-progress-linear color="error" height="20" value="75"></v-progress-linear>
@@ -34,9 +34,9 @@
           class="headline grey darken-2"
           primary-title
         >{{selectedOperation}}:{{dialogTitle}}</v-card-title>
-        <v-card-text>
-          <div id="gantt" style="width:800px;height:500px"></div>
-        </v-card-text>
+        <!-- <v-card-text> -->
+        <div id="gantt" style="width:100%;height:500px"></div>
+        <!-- </v-card-text> -->
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -105,29 +105,53 @@ export default {
       this.spans = res;
       this.loading = false;
     },
+    // 获取单个根Span追踪甘特图
     spanDetail(spanId) {
       this.dialogTitle = spanId;
       this.dialog = true;
       this.drawGantt(spanId);
     },
     async drawGantt(spanId) {
-      let res = await this.$store.dispatch("getTracerSpans", { spanId });
-      console.log(spanId)
       let self = this;
+      let res = await this.$store.dispatch("getTracerSpans", { spanId });
+      let startTime = res.spanArr[0].startMs;
+      // let categories = ["Span1", "Span2", "Span3"].reverse();
+      let services = [];
+      let operations = [];
+      let spans = [];
+      // 所有服务
+      for (let service of res.serviceArr) {
+        services.push({
+          name: service,
+          color: "#7b9ce1"
+        });
+      }
+      // 所有span（逆序添加）
+      for (let i = 0; i < res.spanArr.length; i++) {
+        let span = res.spanArr[i];
+        spans.push({
+          name: span.operationName,
+          value: [
+            res.spanArr.length - 1 - i,
+            span.startMs,
+            span.finishMs,
+            span.durationMs
+          ],
+          itemStyle: {
+            normal: {
+              color: services[0].color
+            }
+          }
+        });
+        operations.unshift(span.operationName);
+      }
+      // Generate mock data
       // var data = [];
       // var dataCount = 10;
-      var startTime = +new Date();
-      var categories = ["Span1", "Span2", "Span3"].reverse();
-      var types = [
-        { name: "Service1", color: "#7b9ce1" },
-        { name: "Service2", color: "#bd6d6c" }
-      ];
-
-      // Generate mock data
       // categories.forEach((category, index) => {
       //   var baseTime = startTime;
       //   // for (var i = 0; i < dataCount; i++) {
-      //     var typeItem = types[Math.round(Math.random() * (types.length - 1))];
+      //     var typeItem = services[Math.round(Math.random() * (services.length - 1))];
       //     var duration = Math.round(Math.random() * 10000);
       //     data.push();
       //     baseTime += Math.round(Math.random() * 2000);
@@ -138,7 +162,7 @@ export default {
         var categoryIndex = api.value(0);
         var start = api.coord([api.value(1), categoryIndex]);
         var end = api.coord([api.value(2), categoryIndex]);
-        var height = api.size([0, 1])[1] * 0.6;
+        var height = api.size([0, 1])[1] * 0.5;
 
         var rectShape = self.$echarts.graphic.clipRectByRect(
           {
@@ -172,7 +196,9 @@ export default {
           }
         },
         title: {
-          text: "Operation Tracer",
+          text: `Operation Tracer \n span:${res.spanArr.length} depth:${
+            res.depth
+          } `,
           left: "center"
         },
         dataZoom: [
@@ -180,7 +206,7 @@ export default {
             type: "slider",
             filterMode: "weakFilter",
             showDataShadow: false,
-            top: 400,
+            top: 480,
             height: 10,
             borderColor: "transparent",
             backgroundColor: "#e2e2e2",
@@ -201,7 +227,7 @@ export default {
           }
         ],
         grid: {
-          height: 300
+          height: 380
         },
         xAxis: {
           min: startTime, // 需要使用根span的startMs
@@ -213,7 +239,7 @@ export default {
           }
         },
         yAxis: {
-          data: categories
+          data: operations
         },
         series: [
           {
@@ -228,26 +254,27 @@ export default {
               x: [1, 2],
               y: 0
             },
-            data: [
-              {
-                name: types[0].name,
-                value: [0, Date.now() + 5 * 1000, Date.now() + 7000, 2000],
-                itemStyle: {
-                  normal: {
-                    color: types[0].color
-                  }
-                }
-              },
-              {
-                name: types[1].name,
-                value: [1, Date.now() + 6 * 1000, Date.now() + 7000, 1000],
-                itemStyle: {
-                  normal: {
-                    color: types[1].color
-                  }
-                }
-              }
-            ]
+            data: spans
+            // data: [
+            //   {
+            //     name: span.name,
+            //     value: [0, Date.now() + 5 * 1000, Date.now() + 7000, 2000],
+            //     itemStyle: {
+            //       normal: {
+            //         color: services[0].color
+            //       }
+            //     }
+            //   }
+            //   // {
+            //   //   name: services[1].name,
+            //   //   value: [1, Date.now() + 6 * 1000, Date.now() + 7000, 1000],
+            //   //   itemStyle: {
+            //   //     normal: {
+            //   //       color: services[1].color
+            //   //     }
+            //   //   }
+            //   // }
+            // ]
           }
         ]
       };

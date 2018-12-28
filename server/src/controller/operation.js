@@ -24,7 +24,7 @@ router.get('/:serviceName/:operationName', function (ctx, next) {
     let rootSpanArr = []
     for (let rootSpan of Cache.serviceMap[ctx.params.serviceName].rootSpanMap[ctx.params.operationName]) {
         rootSpanArr.push({
-            uuid: rootSpan.uuid,
+            id: rootSpan.id,
             operationName: rootSpan.operationName,
             duration: rootSpan.finishMs - rootSpan.startMs
         })

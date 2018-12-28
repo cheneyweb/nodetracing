@@ -12,15 +12,15 @@ message UploadReq {
   string serviceName = 1;
   string id = 2;
   string operationName = 3;
-  int32 startMs = 4;
-  int32 finishMs = 5;
-  int32 durationMs = 6;
+  string startMs = 4;
+  string finishMs = 5;
+  uint32 durationMs = 6;
   string tags = 7;          // json:{}
   string logs = 8;          // json:{}
   string references = 9;    // json:{}
   string originId = 10;
   string parentId = 11;
-  int32 depth = 12;
+  uint32 depth = 12;
 }
 
 message UploadRes {
