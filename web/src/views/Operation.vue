@@ -115,54 +115,66 @@ export default {
       let self = this;
       let res = await this.$store.dispatch("getTracerSpans", { spanId });
       let startTime = res.spanArr[0].startMs;
-      // let categories = ["Span1", "Span2", "Span3"].reverse();
-      let services = [];
       let operations = [];
       let spans = [];
-      // 所有服务
-      for (let service of res.serviceArr) {
-        services.push({
-          name: service,
-          color: "#7b9ce1"
-        });
+      let series = [];
+      let colors = ["#669999", "#996600","990033","336633","999900","FF9933","663366","CCCC00","CC6633","99CC33"];
+      let serviceColorMap = {};
+      // 每个服务设置其颜色
+      for (let i = 0; i < res.serviceArr.length; i++) {
+        serviceColorMap[res.serviceArr[i].serviceName] = colors[i];
       }
       // 所有span（逆序添加）
       for (let i = 0; i < res.spanArr.length; i++) {
         let span = res.spanArr[i];
         spans.push({
-          name: span.operationName,
+          name: span.serviceName,
           value: [
             res.spanArr.length - 1 - i,
             span.startMs,
             span.finishMs,
-            span.durationMs
+            span.durationMs,
+            span.serviceName
           ],
           itemStyle: {
             normal: {
-              color: services[0].color
+              color: serviceColorMap[span.serviceName]
             }
           }
         });
         operations.unshift(span.operationName);
       }
-      // Generate mock data
-      // var data = [];
-      // var dataCount = 10;
-      // categories.forEach((category, index) => {
-      //   var baseTime = startTime;
-      //   // for (var i = 0; i < dataCount; i++) {
-      //     var typeItem = services[Math.round(Math.random() * (services.length - 1))];
-      //     var duration = Math.round(Math.random() * 10000);
-      //     data.push();
-      //     baseTime += Math.round(Math.random() * 2000);
-      //   // }
-      // });
-
+      // 每个服务添加其span
+      for (let service of res.serviceArr) {
+        let serie = {
+          name: service,
+          type: "custom",
+          renderItem: renderItem,
+          itemStyle: {
+            normal: {
+              opacity: 0.8
+            }
+          },
+          encode: {
+            x: [1, 2],
+            y: 0
+          },
+          data: []
+        };
+        for (let span of spans) {
+          if (span.value[4] == service) {
+            serie.data.push(span);
+          }
+        }
+        series.push(serie);
+      }
+      // 自定义渲染
       function renderItem(params, api) {
         var categoryIndex = api.value(0);
         var start = api.coord([api.value(1), categoryIndex]);
         var end = api.coord([api.value(2), categoryIndex]);
         var height = api.size([0, 1])[1] * 0.5;
+        var duration = api.value(3);
 
         var rectShape = self.$echarts.graphic.clipRectByRect(
           {
@@ -183,22 +195,30 @@ export default {
           rectShape && {
             type: "rect",
             shape: rectShape,
-            style: api.style()
+            style: api.style({
+              text: `${duration}ms`
+            })
           }
         );
       }
-
       let option = {
+        color: colors,
         backgroundColor: "gray",
         tooltip: {
           formatter: function(params) {
-            return params.marker + params.name + ": " + params.value[3] + " ms";
+            return (
+              `${params.marker}${params.name}<br/>` +
+              `service：${params.value[4]}<br/>` +
+              `range：${params.value[1] - startTime}ms-${params.value[2] -
+                startTime}ms<br/>` +
+              `duration：${params.value[3]}ms`
+            );
           }
         },
         title: {
           text: `Operation Tracer \n span:${res.spanArr.length} depth:${
             res.depth
-          } `,
+          }`,
           left: "center"
         },
         dataZoom: [
@@ -206,7 +226,7 @@ export default {
             type: "slider",
             filterMode: "weakFilter",
             showDataShadow: false,
-            top: 480,
+            bottom: 10,
             height: 10,
             borderColor: "transparent",
             backgroundColor: "#e2e2e2",
@@ -226,9 +246,9 @@ export default {
             filterMode: "weakFilter"
           }
         ],
-        grid: {
-          height: 380
-        },
+        // grid: {
+        //   height: 380
+        // },
         xAxis: {
           min: startTime, // 需要使用根span的startMs
           scale: true,
@@ -236,49 +256,29 @@ export default {
             formatter: function(val) {
               return Math.max(0, val - startTime) + " ms";
             }
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: "dashed"
+            }
           }
         },
         yAxis: {
-          data: operations
-        },
-        series: [
-          {
-            type: "custom",
-            renderItem: renderItem,
-            itemStyle: {
-              normal: {
-                opacity: 0.8
-              }
-            },
-            encode: {
-              x: [1, 2],
-              y: 0
-            },
-            data: spans
-            // data: [
-            //   {
-            //     name: span.name,
-            //     value: [0, Date.now() + 5 * 1000, Date.now() + 7000, 2000],
-            //     itemStyle: {
-            //       normal: {
-            //         color: services[0].color
-            //       }
-            //     }
-            //   }
-            //   // {
-            //   //   name: services[1].name,
-            //   //   value: [1, Date.now() + 6 * 1000, Date.now() + 7000, 1000],
-            //   //   itemStyle: {
-            //   //     normal: {
-            //   //       color: services[1].color
-            //   //     }
-            //   //   }
-            //   // }
-            // ]
+          data: operations,
+          splitLine: {
+            show: false,
+            lineStyle: {
+              color: "dark"
+            }
           }
-        ]
+        },
+        legend: {
+          type: "scroll",
+          top: 40
+        },
+        series
       };
-
       this.$echarts.init(document.getElementById("gantt")).setOption(option);
     }
   }
