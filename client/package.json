@@ -9,8 +9,10 @@
   "author": "cheneyxu",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "config": "^3.0.1",
+    "express": "^4.16.4",
     "opentracing": "^0.14.3",
-    "x-grpc": "^0.9.1",
-    "config": "^3.0.1"
+    "x-grpc": "^0.9.1"
   }
 }

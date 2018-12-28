@@ -31,11 +31,23 @@ class Tracer extends opentracing.Tracer {
         this._spans.push(span)
         return span
     }
-    _inject() {
-        throw new Error('NOT YET IMPLEMENTED')
+    _inject(spanContext, format, carrier = {}) {
+        switch (format) {
+            case opentracing.FORMAT_HTTP_HEADERS:
+                carrier.nodetracing = encodeURI(JSON.stringify(spanContext))
+                break
+            default:
+                break
+        }
+        return carrier
     }
-    _extract() {
-        throw new Error('NOT YET IMPLEMENTED')
+    _extract(format, carrier) {
+        switch (format) {
+            case opentracing.FORMAT_HTTP_HEADERS:
+                return JSON.parse(decodeURI(carrier.nodetracing))
+            default:
+                break
+        }
     }
     // extend method
     clear() {
