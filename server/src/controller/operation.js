@@ -26,6 +26,7 @@ router.get('/:serviceName/:operationName', function (ctx, next) {
         rootSpanArr.push({
             id: rootSpan.id,
             operationName: rootSpan.operationName,
+            startMs: rootSpan.startMs,
             duration: rootSpan.finishMs - rootSpan.startMs
         })
     }

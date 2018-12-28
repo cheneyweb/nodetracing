@@ -14,8 +14,8 @@
             <td
               @click="spanDetail(props.item.id)"
               class="text-xs-left"
-            >{{ props.item.operationName }}</td>
-            <td @click="spanDetail(props.item.id)">{{ props.item.id }}</td>
+            >{{ props.item.operationName }}：{{ props.item.id }}</td>
+            <td @click="spanDetail(props.item.id)">{{ props.item.startMs | formatDate}}</td>
             <td @click="spanDetail(props.item.id)">
               <v-layout>
                 <v-flex xs11>
@@ -33,7 +33,7 @@
         <v-card-title
           class="headline grey darken-2"
           primary-title
-        >{{selectedOperation}}:{{dialogTitle}}</v-card-title>
+        >{{selectedOperation}}：{{dialogTitle}}</v-card-title>
         <!-- <v-card-text> -->
         <div id="gantt" style="width:100%;height:500px"></div>
         <!-- </v-card-text> -->
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -65,13 +66,19 @@ export default {
           value: "operationName",
           width: "300"
         },
-        { text: "Id", value: "id", sortable: false, width: "100" },
+        { text: "Start", value: "startMs", width: "200" },
         { text: "Duration", value: "duration" }
       ],
       dialog: false,
       dialogTitle: ""
     };
   },
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    }
+  },
+
   created() {
     this.getServices();
   },
@@ -118,7 +125,18 @@ export default {
       let operations = [];
       let spans = [];
       let series = [];
-      let colors = ["#669999", "#996600","990033","336633","999900","FF9933","663366","CCCC00","CC6633","99CC33"];
+      let colors = [
+        "#669999",
+        "#996600",
+        "990033",
+        "336633",
+        "999900",
+        "FF9933",
+        "663366",
+        "CCCC00",
+        "CC6633",
+        "99CC33"
+      ];
       let serviceColorMap = {};
       // 每个服务设置其颜色
       for (let i = 0; i < res.serviceArr.length; i++) {
