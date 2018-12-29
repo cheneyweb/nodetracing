@@ -38,4 +38,5 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 	2018.12.27:完善webui，且准备引入甘特图，初步计算节点关系
 	2018.12.28:整理SpanContext属性，完善上报数据格式，完善时间序列甘特图，实现tracer.inject和tracer.extract
 	2018.12.29:nodejs自动探针实现
+	2018.12.30:nodejs自动探针完善
 	
