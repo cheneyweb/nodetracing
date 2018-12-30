@@ -53,6 +53,7 @@ class Span extends opentracing.Span {
         this.finishMs = finishTime || Date.now()
         this.durationMs = this.finishMs - this.startMs
         // 上报
+        // console.log(JSON.stringify(this.context()))
         this._tracer._rpc.invoke('tracer.Span.upload', this.context())
         // .then((res)=>{
         //     console.log(res)
