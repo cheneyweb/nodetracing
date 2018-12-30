@@ -12,9 +12,10 @@ const hook = asyncHooks.createHook({
     init(asyncId, type, triggerAsyncId) {
         // fs.writeSync(1, `size：${allHookMap.size}\n`)
         allHookMap.set(asyncId, triggerAsyncId)
-        fs.writeSync(1, `${type}(${triggerAsyncId})=>${asyncId}\n`);
+        // fs.writeSync(1, `${type}(${asyncId})<=p${triggerAsyncId}\n`);
     },
     destroy(asyncId) {
+        allHookMap.delete(asyncId)
     }
 })
 hook.enable()
@@ -64,6 +65,9 @@ async function phase3() {
 
 async function phase4() {
     await waitASecond(100)
+    // appHookMap.forEach((context)=>{
+    //     console.log(JSON.stringify(context.span.context()))
+    // })
 }
 
 // 模拟函数执行等待
@@ -115,6 +119,9 @@ async function after(res) {
     await res
     console.log(`after：${id}`)
     appHookMap.get(id).span.finish()
+    // setTimeout(() => {
+    appHookMap.delete(id)
+    // }, 1000)
     return res
 }
 main = R.pipe((...arg) => { arg.push('main'); return arg }, before, R.apply(main), after)
@@ -128,3 +135,8 @@ setTimeout(async () => {
     await main()
 }, 2000)
 // main()
+
+setTimeout(() => {
+    console.log(allHookMap.size)
+    console.log(appHookMap.size)
+}, 10000)
