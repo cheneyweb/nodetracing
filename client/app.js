@@ -12,7 +12,7 @@ const hook = asyncHooks.createHook({
     init(asyncId, type, triggerAsyncId) {
         // fs.writeSync(1, `size：${allHookMap.size}\n`)
         allHookMap.set(asyncId, triggerAsyncId)
-        // fs.writeSync(1, `${type}(${triggerAsyncId})=>${asyncId}\n`);
+        fs.writeSync(1, `${type}(${triggerAsyncId})=>${asyncId}\n`);
     },
     destroy(asyncId) {
     }
