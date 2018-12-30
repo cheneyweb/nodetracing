@@ -6,18 +6,6 @@ const axios = require('axios')
 const fs = require('fs')
 const allHookMap = new Map()
 const appHookMap = new Map()
-// const Context = {
-//     init(asyncId, type, triggerAsyncId) {
-//         if (context.has(triggerAsyncId)) {
-//             context.set(asyncId, context.get(triggerAsyncId));
-//         }
-//     },
-//     destroy(asyncId) {
-//         if (context.has(asyncId)) {
-//             context.delete(asyncId);
-//         }
-//     }
-// }
 
 const asyncHooks = require('async_hooks')
 const hook = asyncHooks.createHook({
@@ -46,68 +34,39 @@ hook.enable()
 // });
 
 async function main() {
-    // autoSpan(asyncHooks.executionAsyncId(), asyncHooks.triggerAsyncId(), 'main')
-    // let parentSpan = tracer.startSpan('ps')
-    // parentSpan.setTag('category', '根')
     await waitASecond(100)
 
     await phase1()
 
     await phase2()
 
+    // TODO 未来RPC远程调用也需要自动探针注入，尚未实现
     // const headers = tracer.inject(parentSpan2, nodetracing.FORMAT_HTTP_HEADERS, {})
     // await axios.get('http://localhost:1111/hello', { headers })
 
     phase3()
 
     return 'mainres'
-    // parentSpan.finish()
 }
 
 async function phase1() {
-    // autoSpan(asyncHooks.executionAsyncId(), asyncHooks.triggerAsyncId(), 'phase1')
-
-    // let childSpan = tracer.startSpan('cs1-1', { childOf: parentSpan })
-    // childSpan.setTag('category', '注册1')
-    // childSpan.log({ event: 'waiting' })
     await waitASecond(200)
-    // childSpan.log({ event: 'done' })
-    // childSpan.finish()
-    // return childSpan
 }
 
 async function phase2() {
-    // autoSpan(asyncHooks.executionAsyncId(), asyncHooks.triggerAsyncId(), 'phase2')
-
-    // let childSpan = tracer.startSpan('cs1-2', { childOf: parentSpan })
-    // childSpan.setTag('category', '注册2')
-    // childSpan.log({ event: 'waiting' })
     await waitASecond(300)
-    // childSpan.log({ event: 'done' })
-    // childSpan.finish()
-    // return childSpan
 }
 
 async function phase3() {
-    // autoSpan(asyncHooks.executionAsyncId(), asyncHooks.triggerAsyncId(), 'phase3')
-
-    // let childSpan = tracer.startSpan('cs2', { childOf: parentSpan })
-    // childSpan.setTag('category', '注册3')
-    // childSpan.log({ event: 'waiting' })
     await waitASecond(400)
-    // childSpan.log({ event: 'done' })
-
     phase4()
-
-    // childSpan.finish()
-    // return childSpan
 }
 
 async function phase4() {
-    // autoSpan(asyncHooks.executionAsyncId(), asyncHooks.triggerAsyncId(), 'phase4')
-    // console.log(appHookMap)
+    await waitASecond(100)
 }
 
+// 模拟函数执行等待
 function waitASecond(waitTime) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -116,9 +75,8 @@ function waitASecond(waitTime) {
     })
 }
 
-// ==========自动生成span==========
+// ==========上下文关系处理==========
 function autoSpan(triggerAsyncId, executionAsyncId, operationName) {
-    // 追踪上下文
     let context = { parentId: triggerAsyncId, id: executionAsyncId, operationName }
     let parent = getParent(triggerAsyncId)
     // 非根Span
@@ -131,29 +89,12 @@ function autoSpan(triggerAsyncId, executionAsyncId, operationName) {
     else {
         context.span = tracer.startSpan(operationName)
     }
+    // context.span.setTag('category', '自定义标签')
+    // context.span.log({ event: '自定义日志事件' })
     // 存储上下文
     appHookMap.set(executionAsyncId, context)
     return context.span
 }
-// ==========自动生成span==========
-
-// ==========每2秒收集处理一次span关系==========
-// setInterval(() => {
-//     tracerRelation()
-//     console.log(appHookMap)
-//     // allHookMap.clear()
-//     // appHookMap.clear()
-// }, 2000)
-
-// 追踪所有span关系
-// function tracerRelation() {
-//     for (let hook of appHookMap.values()) {
-//         hook.parent = getParent(hook.parentId)
-//         console.log(hook.parent)
-//         hook.parentId = hook.parent ? hook.parent.id : null
-//     }
-// }
-// 查找父亲
 function getParent(parentId) {
     if (appHookMap.has(parentId)) {
         return appHookMap.get(parentId)
@@ -161,23 +102,19 @@ function getParent(parentId) {
         return getParent(allHookMap.get(parentId))
     }
 }
-// ==========每2秒收集处理一次span关系==========
-
+// ==========上下文关系处理==========
 
 // ==========AOP==========
-let before = (args) => {
-    console.log(`before`)
-    // console.log(asyncHooks.executionAsyncId())
-    // console.log(asyncHooks.triggerAsyncId())
+function before(args) {
+    console.log(`before：${asyncHooks.executionAsyncId()}`)
     autoSpan(asyncHooks.triggerAsyncId(), asyncHooks.executionAsyncId(), args.pop())
     return args
 }
-let after = (res) => {
-    console.log(`after`)
-    // console.log(appHookMap.get(asyncHooks.executionAsyncId()).span)
-    // console.log(asyncHooks.executionAsyncId())
-    appHookMap.get(asyncHooks.executionAsyncId()).span.finish()
-    console.log(appHookMap.get(asyncHooks.executionAsyncId()).span.durationMs)
+async function after(res) {
+    let id = asyncHooks.executionAsyncId()
+    await res
+    console.log(`after：${id}`)
+    appHookMap.get(id).span.finish()
     return res
 }
 main = R.pipe((...arg) => { arg.push('main'); return arg }, before, R.apply(main), after)
@@ -188,9 +125,6 @@ phase4 = R.pipe((...arg) => { arg.push('phase4'); return arg }, before, R.apply(
 // ==========AOP==========
 
 setTimeout(async () => {
-    // let time1 = Date.now()
-    // console.log(time1)
     await main()
-    // console.log(Date.now() - time1)
 }, 2000)
 // main()
