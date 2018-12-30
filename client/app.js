@@ -1,6 +1,7 @@
 // ==========自动探针==========
 const nodetracing = require('./src/index.js')
 const tracer = new nodetracing.Tracer({ serviceName: 'S1', auto: true })
+// 切面注入需要监控的函数
 main = nodetracing.aop(main)
 phase1 = nodetracing.aop(phase1)
 phase2 = nodetracing.aop(phase2)
