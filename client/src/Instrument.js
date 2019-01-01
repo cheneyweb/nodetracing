@@ -63,6 +63,13 @@ class Instrument {
             context.span.finish()
             return res
         }
+        // 合并AOP
+        let funcName = func.name
+        if (func.constructor.name == 'AsyncFunction') {
+            return func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), afterAsync)
+        } else {
+            return func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), after)
+        }
         // for (let func of funcs) {
         //     let funcName = func.name
         //     func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), after)
@@ -73,13 +80,6 @@ class Instrument {
         // phase2 = R.pipe((...arg) => { arg.push('phase2'); return arg }, before, R.apply(phase2), after)
         // phase3 = R.pipe((...arg) => { arg.push('phase3'); return arg }, before, R.apply(phase3), after)
         // phase4 = R.pipe((...arg) => { arg.push('phase4'); return arg }, before, R.apply(phase4), after)
-        // 合并AOP
-        let funcName = func.name
-        if (func.constructor.name == 'AsyncFunction') {
-            return func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), afterAsync)
-        } else {
-            return func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), after)
-        }
     }
 }
 
