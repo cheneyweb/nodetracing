@@ -2,7 +2,8 @@ const asyncHooks = require('async_hooks')
 // const fs = require('fs')
 const opentracing = require('opentracing')
 const Span = require('./Span.js')
-
+const Instrument = require('./Instrument.js')
+// Remote Connection
 const rpcconfig = require('config')
 const RPCClient = require('x-grpc').RPCClient
 /**
@@ -23,23 +24,27 @@ class Tracer extends opentracing.Tracer {
         config.auto && this._auto()
     }
     _auto() {
-        global.tracer = this
-        let allHookMap = global.allHookMap = new Map()
-        let appHookMap = global.appHookMap = new Map()
+        Instrument.tracer = this
+        let allHookMap = Instrument.allHookMap = new Map()
         const hook = asyncHooks.createHook({
             init(asyncId, type, triggerAsyncId) {
-                allHookMap.set(asyncId, triggerAsyncId)
+                allHookMap.set(asyncId, { id: asyncId, parentId: triggerAsyncId, parent: null, operationName: null, span: null, iat: Date.now(), isGC: false })
                 // fs.writeSync(1, `${type}(${asyncId})<=p${triggerAsyncId}\n`);
             },
             destroy(asyncId) {
-                allHookMap.delete(asyncId)
+                if (allHookMap.get(asyncId)) {
+                    if (allHookMap.get(asyncId).operationName) {
+                        allHookMap.get(asyncId).isGC = true
+                    } else {
+                        allHookMap.delete(asyncId)
+                    }
+                }
             }
         })
         hook.enable()
-        // setTimeout(() => {
-        //     console.log(allHookMap.size)
-        //     console.log(appHookMap.size)
-        // },10000)
+        setTimeout(() => {
+            console.log(allHookMap.size)
+        }, 10000)
     }
     _startSpan(name, options) {
         let span = new Span(this)
