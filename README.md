@@ -25,9 +25,22 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - java（规划中...）
 
 ## 使用说明
+### 后台单例
+```shell
+cd server && npm run start
 
-### 初始化
->`const nodetracing = require('')`
+open http://localhost:8080
+```
+### 后台集群
+```shell
+docker network create nodetracing_overlay --driver overlay
+docker stack deploy --prune -c docker-compose.yml nodetracing
+```
+
+### 探针初始化
+```js
+const nodetracing = require('')
+```
 
 ```js
 const tracer = new nodetracing.Tracer({ 
@@ -38,11 +51,23 @@ const tracer = new nodetracing.Tracer({
 })
 ```
 
-### ASYNC Function 自动探针
-### HTTP自动探针（axios）
-### HTTP自动探针（koa/express）
+### async自动探针（支持async函数）
+```js
+func1 = nodetracing.aop(func1)
+func2 = nodetracing.aop(func2)
+...
+```
+### http请求自动探针（axios）
+```js
+axios.interceptors.request.use(nodetracing.axiosMiddleware())
+```
+### http响应自动探针（koa/express）
+```js
+app.use(nodetracing.koaMiddleware())
+OR
+app.use(nodetracing.expressMiddleware())
+```
 ### grpc自动探针
-
 
 ## 支持与帮助
 
