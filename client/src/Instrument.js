@@ -75,8 +75,9 @@ class Instrument {
         // }
         // return funcs
     }
-    // 切面注入axios
-    static aopAxios(axios) {
+
+    // axios切面中间件
+    static axiosMiddleware() {
         let tracer = Instrument.tracer
         let contextMap = Instrument.contextMap
         // 获取父级上下文
@@ -86,23 +87,14 @@ class Instrument {
                 return parentContext.span ? { id: parentId, span: parentContext.span } : getParent(parentContext.parentId)
             }
         }
-        // axios请求拦截中间件
-        axios.interceptors.request.use(config => {
+        // span注入
+        return (config) => {
             let parent = getParent(asyncHooks.triggerAsyncId())
             if (parent) {
                 tracer.inject(parent.span, opentracing.FORMAT_HTTP_HEADERS, config.headers)
             }
             return config
-        }, err => {
-            return Promise.reject(err)
-        })
-        // axios响应拦截中间件
-        // axios.interceptors.response.use(res => {
-        //     console.log(res.headers)
-        //     return res
-        // }, err => {
-        //     return Promise.reject(err)
-        // })
+        }
     }
     // express切面中间件
     static expressMiddleware() {

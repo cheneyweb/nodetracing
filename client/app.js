@@ -9,7 +9,7 @@ phase3 = nodetracing.aop(phase3)
 phase4 = nodetracing.aop(phase4)
 // 切面注入HTTP请求头
 const axios = require('axios')
-nodetracing.aopAxios(axios)
+axios.interceptors.request.use(nodetracing.axiosMiddleware())
 // ==========自动探针==========
 
 const app1 = require('./app1.js')

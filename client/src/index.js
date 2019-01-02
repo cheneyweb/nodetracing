@@ -5,4 +5,4 @@ const Span = require('./Span.js')
 const SpanContext = require('./SpanContext.js')
 const Instrument = require('./Instrument')
 
-module.exports = { ...opentracing, Tracer, Span, SpanContext, aop: Instrument.aop, aopAxios: Instrument.aopAxios, expressMiddleware: Instrument.expressMiddleware, koaMiddleware: Instrument.koaMiddleware }
+module.exports = { ...opentracing, Tracer, Span, SpanContext, aop: Instrument.aop, axiosMiddleware: Instrument.axiosMiddleware, expressMiddleware: Instrument.expressMiddleware, koaMiddleware: Instrument.koaMiddleware }
