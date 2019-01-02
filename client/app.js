@@ -1,6 +1,6 @@
 // ==========自动探针==========
 const nodetracing = require('./src/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'S1', auto: true })
+const tracer = new nodetracing.Tracer({ serviceName: 'S1', auto: true, stackLog: false, maxDuration: 5000 })
 // 切面注入需要监控的函数
 main = nodetracing.aop(main)
 phase1 = nodetracing.aop(phase1)
@@ -58,7 +58,7 @@ async function phase3() {
 }
 
 async function phase4() {
-    await waitASecond(100)
+    await waitASecond(200)
     // appHookMap.forEach((context)=>{
     //     console.log(JSON.stringify(context.span.context()))
     // })

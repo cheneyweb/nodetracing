@@ -1,6 +1,6 @@
 const asyncHooks = require('async_hooks')
-// const fs = require('fs')
 const opentracing = require('opentracing')
+// const fs = require('fs')
 const Span = require('./Span.js')
 const Instrument = require('./Instrument.js')
 // Remote Connection
@@ -24,27 +24,38 @@ class Tracer extends opentracing.Tracer {
         config.auto && this._auto()
     }
     _auto() {
+        // CONTEXT_MAP
         Instrument.tracer = this
-        let allHookMap = Instrument.allHookMap = new Map()
+        let contextMap = Instrument.contextMap = new Map()
+        // ASYNC_HOOK
         const hook = asyncHooks.createHook({
             init(asyncId, type, triggerAsyncId) {
-                allHookMap.set(asyncId, { id: asyncId, parentId: triggerAsyncId, parent: null, operationName: null, span: null, iat: Date.now(), isGC: false })
+                contextMap.set(asyncId, { parentId: triggerAsyncId, span: null, isGC: false })
                 // fs.writeSync(1, `${type}(${asyncId})<=p${triggerAsyncId}\n`);
             },
             destroy(asyncId) {
-                if (allHookMap.get(asyncId)) {
-                    if (allHookMap.get(asyncId).operationName) {
-                        allHookMap.get(asyncId).isGC = true
+                if (contextMap.get(asyncId)) {
+                    if (contextMap.get(asyncId).span) {
+                        contextMap.get(asyncId).isGC = true
                     } else {
-                        allHookMap.delete(asyncId)
+                        contextMap.delete(asyncId)
                     }
                 }
             }
         })
         hook.enable()
-        setTimeout(() => {
-            console.log(allHookMap.size)
-        }, 10000)
+        // GC
+        this._config.maxDuration = this._config.maxDuration || 300000
+        setInterval(() => {
+            let now = Date.now()
+            console.log(contextMap)
+            contextMap.forEach((context, key) => {
+                if (context.isGC && (now - context.span.startMs > this._config.maxDuration)) {
+                    contextMap.delete(key)
+                }
+            })
+            console.log(`GC after：${contextMap.size}`)
+        }, this._config.maxDuration)
     }
     _startSpan(name, options) {
         let span = new Span(this)
@@ -55,7 +66,9 @@ class Tracer extends opentracing.Tracer {
             }
         }
         // Capture the stack at the time the span started
-        span._startStack = new Error().stack
+        if (this._config.stackLog) {
+            span._startStack = new Error().stack
+        }
         this._spans.push(span)
         return span
     }

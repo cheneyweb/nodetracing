@@ -7,22 +7,19 @@ class Instrument {
     // 自动Span
     static autoSpan(triggerAsyncId, executionAsyncId, operationName) {
         let tracer = Instrument.tracer
-        let allHookMap = Instrument.allHookMap
+        let contextMap = Instrument.contextMap
+        let context = contextMap.get(executionAsyncId)
         // 获取父级上下文
         function getParent(parentId) {
-            let parentContext = allHookMap.get(parentId)
+            let parentContext = contextMap.get(parentId)
             if (parentContext) {
-                return parentContext.span ? parentContext : getParent(parentContext.parentId)
+                return parentContext.span ? { id: parentId, span: parentContext.span } : getParent(parentContext.parentId)
             }
         }
         let parent = getParent(triggerAsyncId)
-        // 获取当前上下文
-        let context = allHookMap.get(executionAsyncId)
-        context.operationName = operationName
         // 非根Span
         if (parent) {
             context.parentId = parent.id
-            context.parent = parent
             context.span = tracer.startSpan(operationName, { childOf: parent.span })
         }
         // 根Span
@@ -48,18 +45,19 @@ class Instrument {
         }
         // 后置AOP
         async function afterAsync(res) {
-            let allHookMap = Instrument.allHookMap
+            let contextMap = Instrument.contextMap
+            let context = contextMap.get(asyncHooks.executionAsyncId())
             let id = asyncHooks.executionAsyncId()
             await res
-            let context = allHookMap.get(id)
-            console.log(`after ${context.operationName}：${context.id}`)
+            console.log(`after ${context.span.operationName}：${id}`)
             context.span.finish()
             return res
         }
         function after(res) {
-            let allHookMap = Instrument.allHookMap
-            let context = allHookMap.get(asyncHooks.executionAsyncId())
-            console.log(`after ${context.operationName}：${context.id}`)
+            let contextMap = Instrument.contextMap
+            let context = contextMap.get(asyncHooks.executionAsyncId())
+            let id = asyncHooks.executionAsyncId()
+            console.log(`after ${context.operationName}：${id}`)
             context.span.finish()
             return res
         }
@@ -75,11 +73,6 @@ class Instrument {
         //     func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), after)
         // }
         // return funcs
-        // main = R.pipe((...arg) => { arg.push('main'); return arg }, before, R.apply(main), after)
-        // phase1 = R.pipe((...arg) => { arg.push('phase1'); return arg }, before, R.apply(phase1), after)
-        // phase2 = R.pipe((...arg) => { arg.push('phase2'); return arg }, before, R.apply(phase2), after)
-        // phase3 = R.pipe((...arg) => { arg.push('phase3'); return arg }, before, R.apply(phase3), after)
-        // phase4 = R.pipe((...arg) => { arg.push('phase4'); return arg }, before, R.apply(phase4), after)
     }
 }
 
