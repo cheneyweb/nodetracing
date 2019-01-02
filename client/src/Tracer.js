@@ -26,7 +26,7 @@ class Tracer extends opentracing.Tracer {
     _auto() {
         // CONTEXT_MAP
         Instrument.tracer = this
-        let contextMap = Instrument.contextMap = new Map()
+        let contextMap = Instrument.contextMap = new Map([[1, {}]])
         // ASYNC_HOOK
         const hook = asyncHooks.createHook({
             init(asyncId, type, triggerAsyncId) {
@@ -48,7 +48,6 @@ class Tracer extends opentracing.Tracer {
         this._config.maxDuration = this._config.maxDuration || 300000
         setInterval(() => {
             let now = Date.now()
-            console.log(contextMap)
             contextMap.forEach((context, key) => {
                 if (context.isGC && (now - context.span.startMs > this._config.maxDuration)) {
                     contextMap.delete(key)

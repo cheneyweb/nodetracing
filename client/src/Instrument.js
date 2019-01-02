@@ -33,7 +33,7 @@ class Instrument {
     // 切面注入
     static aop(func) {
         if (func.constructor.name != 'AsyncFunction') {
-            console.error(`only work with async function! ${func.name} isn't an async function`)
+            console.error(`【WARNING】only work with async function! ${func.name} isn't an async function`)
             return func
         }
         // 前置AOP

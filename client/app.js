@@ -22,16 +22,11 @@ const axios = require('axios')
 // }, err => {
 //     return Promise.reject(err);
 // });
-
-let test2 = require('./app2.js')
-// test2()
-// console.log(global.appHookMap)
+let main2 = require('./app2.js')
 
 async function main() {
-    await waitASecond(100)
-
+    await waitASecond(500)
     await phase1()
-
     await phase2()
 
     // TODO 未来RPC远程调用也需要自动探针注入，尚未实现
@@ -39,29 +34,21 @@ async function main() {
     // await axios.get('http://localhost:1111/hello', { headers })
 
     phase3()
-
     return 'mainres'
 }
-
 async function phase1() {
     await waitASecond(200)
 }
-
 async function phase2() {
     await waitASecond(300)
 }
-
 async function phase3() {
     await waitASecond(400)
-    await test2()
+    await main2()
     phase4()
 }
-
 async function phase4() {
     await waitASecond(200)
-    // appHookMap.forEach((context)=>{
-    //     console.log(JSON.stringify(context.span.context()))
-    // })
 }
 
 // 模拟函数执行等待
@@ -73,11 +60,7 @@ function waitASecond(waitTime) {
     })
 }
 
-setTimeout(async () => {
-    await main()
-}, 2000)
-
-
+main()
 
 // const R = require('ramda')
 // const fs = require('fs')

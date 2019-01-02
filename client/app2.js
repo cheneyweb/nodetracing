@@ -1,16 +1,13 @@
 const nodetracing = require('./src/index.js')
 // const tracer = new nodetracing.Tracer({ serviceName: 'S2' })
-test2 = nodetracing.aop(test2)
+main2 = nodetracing.aop(main2)
 
-// async function test2() {
-//     await waitASecond(100)
-// }
-async function test2() {
+async function main2() {
     await waitASecond(100)
 }
-// test2()
 
-module.exports = test2
+module.exports = main2
+
 // // ==========模拟服务==========
 // const express = require('express')
 // const app = express()
