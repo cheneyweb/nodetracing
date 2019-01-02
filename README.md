@@ -26,6 +26,23 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 
 ## 使用说明
 
+### 初始化
+>`const nodetracing = require('')`
+
+```js
+const tracer = new nodetracing.Tracer({ 
+	serviceName: 'S1',
+	auto: true,
+	stackLog: false,
+	maxDuration: 5000 
+})
+```
+
+### ASYNC Function 自动探针
+### HTTP自动探针（axios）
+### HTTP自动探针（koa/express）
+### grpc自动探针
+
 
 ## 支持与帮助
 
