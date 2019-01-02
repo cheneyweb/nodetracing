@@ -102,26 +102,51 @@ class Instrument {
         return (req, res, next) => {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
+            let originalPath = req.originalUrl.split('?')[0]
             // 请求解包
             if (req.headers && req.headers.nodetracing) {
                 // 获取父级上下文
                 let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, req.headers)
                 // 生成span
-                let operationName = `${req.method}${req.originalUrl}`
+                let operationName = `${req.method}${originalPath}`
                 routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
             }
             // 路由结束上报
-            res.once('finish', () => {
-                let operationName = `${req.method}${req.originalUrl}`
-                routerMap.get(operationName).finish()
-                routerMap.delete(operationName)
+            res.on('finish', () => {
+                let operationName = `${req.method}${originalPath}`
+                if (routerMap.get(operationName)) {
+                    routerMap.get(operationName).finish()
+                    routerMap.delete(operationName)
+                }
             })
             return next()
         }
     }
     // koa切面中间件
-    static koaMiddleware(koa) {
-
+    static koaMiddleware() {
+        Instrument.routerMap = new Map()
+        return (ctx, next) => {
+            let tracer = Instrument.tracer
+            let routerMap = Instrument.routerMap
+            let originalPath = ctx.originalUrl.split('?')[0]
+            // 请求解包
+            if (ctx.header && ctx.header.nodetracing) {
+                // 获取父级上下文
+                let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, ctx.header)
+                // 生成span
+                let operationName = `${ctx.method}${originalPath}`
+                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+            }
+            // 路由结束上报
+            ctx.res.on('finish', () => {
+                let operationName = `${ctx.method}${originalPath}`
+                if (routerMap.get(operationName)) {
+                    routerMap.get(operationName).finish()
+                    routerMap.delete(operationName)
+                }
+            })
+            return next()
+        }
     }
 }
 

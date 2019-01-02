@@ -1,22 +1,23 @@
 const nodetracing = require('./src/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'S2' })
-
-// 切面注入HTTP请求头
-const express = require('express')
-nodetracing.aopExpress(express)
+const tracer = new nodetracing.Tracer({ serviceName: 'S3', auto: true, stackLog: false, maxDuration: 5000 })
 
 // ==========模拟服务==========
-const app = express()
-app.get('/hello', async (req, res) => {
-    // console.log(req.headers)
-    // console.log(tracer.extract(nodetracing.FORMAT_HTTP_HEADERS, req.headers))
+const Koa = require('koa')
+const Router = require('koa-router')
+const router = new Router()
+router.get('/koa', async (ctx, next) => {
     // await main()
     await waitASecond(200)
-    res.send('Hello World!')
-});
-app.listen(1111, () => {
-    console.log('模拟服务启动端口：1111');
-});
+    ctx.body = 'Y'
+})
+const app = new Koa()
+// 切面中间件
+app.use(nodetracing.koaMiddleware())
+
+app.use(router.routes())
+app.listen(2222, () => {
+    console.log('模拟服务启动端口：2222')
+})
 // ==========模拟服务==========
 
 // async function main() {

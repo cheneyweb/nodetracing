@@ -60,4 +60,4 @@ const tracer = new nodetracing.Tracer({
 	2018.12.29:nodejs自动探针实现
 	2018.12.30:nodejs自动探针完善
 	2019.01.01:支持AsyncFunction自动探针
-	2019.01.02:垃圾回收完善，最小化内存开销，实现HTTP自动探针
+	2019.01.02:垃圾回收完善，最小化内存开销，实现HTTP自动探针（支持axios,koa,express）

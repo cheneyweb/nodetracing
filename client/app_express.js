@@ -6,14 +6,14 @@ const app = express()
 // 切面中间件
 app.use(nodetracing.expressMiddleware())
 
-app.get('/hello', async (req, res) => {
+app.get('/express', async (req, res) => {
     // await main()
     await waitASecond(200)
-    res.send('Hello World!')
-});
+    res.send('Y')
+})
 app.listen(1111, () => {
-    console.log('模拟服务启动端口：1111');
-});
+    console.log('模拟服务启动端口：1111')
+})
 // ==========模拟服务==========
 
 // async function main() {

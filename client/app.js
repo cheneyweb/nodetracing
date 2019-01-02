@@ -19,19 +19,20 @@ async function main() {
     await phase1()
     await phase2()
 
-    await axios.get('http://localhost:1111/hello')
+    await axios.get('http://localhost:1111/express')
 
     phase3()
     return 'mainres'
 }
 async function phase1() {
-    await waitASecond(200)
+    await waitASecond(100)
 }
 async function phase2() {
-    await waitASecond(300)
+    await axios.get('http://localhost:2222/koa')
+    await waitASecond(100)
 }
 async function phase3() {
-    await waitASecond(400)
+    await waitASecond(200)
     await app1()
     phase4()
 }
