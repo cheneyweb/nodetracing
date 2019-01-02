@@ -11,7 +11,7 @@ nodetracing由[nodejs](https://nodejs.org)编写，基于[opentracing-javascript
 - [jaeger](https://github.com/jaegertracing/jaeger)
 - [skywalking](https://github.com/apache/incubator-skywalking)
 
-以上项目的确功能强大，但也重型庞大。所以一套开箱即用，精简轻便，拓展灵活的分布式追踪系统是nodetracing的目标
+以上项目的确功能强大，但也重型庞大，所以一套开箱即用，精简轻便，拓展灵活的分布式追踪系统是nodetracing的目标
 
 ## 设计理念
 
@@ -34,6 +34,7 @@ open http://localhost:8080
 ### 后台集群
 ```shell
 docker network create nodetracing_overlay --driver overlay
+
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
@@ -44,10 +45,10 @@ const nodetracing = require('')
 
 ```js
 const tracer = new nodetracing.Tracer({ 
-	serviceName: 'S1',
-	auto: true,
-	stackLog: false,
-	maxDuration: 5000 
+	serviceName: 'S1',	// 服务名称
+	auto: true,			// 是否启用自动追踪
+	stackLog: false,	// 是否记录详细堆栈信息（包括代码行号位置等，内存消耗较大）
+	maxDuration: 5000 	// 最大函数执行时间（垃圾回收时间间隔）
 })
 ```
 
