@@ -7,31 +7,19 @@ phase1 = nodetracing.aop(phase1)
 phase2 = nodetracing.aop(phase2)
 phase3 = nodetracing.aop(phase3)
 phase4 = nodetracing.aop(phase4)
-// ==========自动探针==========
+// 切面注入HTTP请求头
 const axios = require('axios')
-// axios.interceptors.request.use(config => {
-//     // console.log(config.method)
-//     // console.log(config.url)
-//     // console.log(asyncHooks.triggerAsyncId())
-//     // console.log(asyncHooks.executionAsyncId())
-//     // Context.context.set(asyncHooks.executionAsyncId(), config);
-//     if (spanContext) {
-//         config.headers.nodetracing = `${spanContext}`;
-//     }
-//     return config;
-// }, err => {
-//     return Promise.reject(err);
-// });
-let main2 = require('./app2.js')
+nodetracing.aopAxios(axios)
+// ==========自动探针==========
+
+const app1 = require('./app1.js')
 
 async function main() {
     await waitASecond(500)
     await phase1()
     await phase2()
 
-    // TODO 未来RPC远程调用也需要自动探针注入，尚未实现
-    // const headers = tracer.inject(parentSpan2, nodetracing.FORMAT_HTTP_HEADERS, {})
-    // await axios.get('http://localhost:1111/hello', { headers })
+    await axios.get('http://localhost:1111/hello')
 
     phase3()
     return 'mainres'
@@ -44,7 +32,7 @@ async function phase2() {
 }
 async function phase3() {
     await waitASecond(400)
-    await main2()
+    await app1()
     phase4()
 }
 async function phase4() {
@@ -61,6 +49,8 @@ function waitASecond(waitTime) {
 }
 
 main()
+// let headers = { custom: 123 }
+// axios.get('http://localhost:1111/hello', { headers })
 
 // const R = require('ramda')
 // const fs = require('fs')

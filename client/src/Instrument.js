@@ -1,5 +1,6 @@
 const asyncHooks = require('async_hooks')
 const R = require('ramda')
+const opentracing = require('opentracing')
 /**
  * 自动探针
  */
@@ -73,6 +74,62 @@ class Instrument {
         //     func = R.pipe((...arg) => { arg.push(funcName); return arg }, before, R.apply(func), after)
         // }
         // return funcs
+    }
+    // 切面注入axios
+    static aopAxios(axios) {
+        let tracer = Instrument.tracer
+        let contextMap = Instrument.contextMap
+        // 获取父级上下文
+        function getParent(parentId) {
+            let parentContext = contextMap.get(parentId)
+            if (parentContext) {
+                return parentContext.span ? { id: parentId, span: parentContext.span } : getParent(parentContext.parentId)
+            }
+        }
+        // axios请求拦截中间件
+        axios.interceptors.request.use(config => {
+            let parent = getParent(asyncHooks.triggerAsyncId())
+            if (parent) {
+                tracer.inject(parent.span, opentracing.FORMAT_HTTP_HEADERS, config.headers)
+            }
+            return config
+        }, err => {
+            return Promise.reject(err)
+        })
+        // axios响应拦截中间件
+        // axios.interceptors.response.use(res => {
+        //     console.log(res.headers)
+        //     return res
+        // }, err => {
+        //     return Promise.reject(err)
+        // })
+    }
+    // express切面中间件
+    static expressMiddleware() {
+        Instrument.routerMap = new Map()
+        return (req, res, next) => {
+            let tracer = Instrument.tracer
+            let routerMap = Instrument.routerMap
+            // 请求解包
+            if (req.headers && req.headers.nodetracing) {
+                // 获取父级上下文
+                let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, req.headers)
+                // 生成span
+                let operationName = `${req.method}${req.originalUrl}`
+                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+            }
+            // 路由结束上报
+            res.once('finish', () => {
+                let operationName = `${req.method}${req.originalUrl}`
+                routerMap.get(operationName).finish()
+                routerMap.delete(operationName)
+            })
+            return next()
+        }
+    }
+    // koa切面中间件
+    static koaMiddleware(koa) {
+
     }
 }
 
