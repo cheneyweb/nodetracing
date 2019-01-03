@@ -25,20 +25,20 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - java（规划中...）
 
 ## 使用说明
-### 后台单例
+### 1、后台单例
 ```shell
 cd server && npm run start
 ```
 >open browser http://localhost:3636/nodetracing/web/index.html
 
-### 后台集群（规划中...）
+### 2、后台集群（规划中...）
 ```shell
 docker network create nodetracing_overlay --driver overlay
 
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
-### 探针初始化
+### 3、探针初始化
 ```js
 const nodetracing = require('nodetracing')
 ```
@@ -53,29 +53,29 @@ const tracer = new nodetracing.Tracer({
 })
 ```
 
-### async自动探针（支持async函数）
+### 3.1、async自动探针（支持async函数）
 ```js
 func1 = nodetracing.aop(func1)
 func2 = nodetracing.aop(func2)
 ...
 ```
-### http请求自动探针（axios）
+### 3.2、http请求自动探针（axios）
 ```js
 axios.interceptors.request.use(nodetracing.axiosMiddleware())
 ```
-### http响应自动探针（koa/express）
+### 3.3、http响应自动探针（koa/express）
 ```js
 app.use(nodetracing.koaMiddleware())
 OR
 app.use(nodetracing.expressMiddleware())
 ```
-### grpc-client自动探针（原生）
+### 3.4、grpc-client自动探针（原生）
 ```js
 const grpc = require('grpc')
 const Service = grpc.loadPackageDefinition(...)[packageName][serviceName]
 new Service("ip:port", grpc.credentials.createInsecure(), { interceptors: [nodetracing.grpcClientMiddleware()] })
 ```
-### grpc-server自动探针（原生）
+### 3.5、grpc-server自动探针（原生）
 ```js
 const grpc = require('grpc')
 const interceptors = require('@echo-health/grpc-interceptors')
@@ -83,7 +83,7 @@ let server = new grpc.Server()
 server = interceptors.serverProxy(this.server)
 server.use(nodetracing.grpcClientMiddleware())
 ```
-### grpc-client自动探针（x-grpc框架）
+### 3.6、grpc-client自动探针（x-grpc框架）
 ```js
 const RPCClient = require('x-grpc').RPCClient
 const rpcClient = new RPCClient({
@@ -96,7 +96,7 @@ rpcClient.use(nodetracing.grpcClientMiddleware())
 rpcClient.connect()
 let result = await rpcClient.invoke('demo.User.login', { username: 'cheney', password: '123456' } , optionMeta?)
 ```
-### grpc-server自动探针（x-grpc框架）
+### 3.7、grpc-server自动探针（x-grpc框架）
 ```js
 const RPCServer = require('x-grpc').RPCServer
 const rpcServer = new RPCServer({
@@ -108,6 +108,34 @@ const rpcServer = new RPCServer({
 rpcServer.use(nodetracing.grpcServerMiddleware())
 rpcServer.listen()
 ```
+
+### 4、手动探针
+```js
+// 创建根Span
+let parentSpan = tracer.startSpan('sp1')
+// 设置标签
+parentSpan.setTag('category', '根')
+// 创建下级Span
+let childSpan = tracer.startSpan('csp1', { childOf: parentSpan })
+// 设置日志
+childSpan.log({ event: 'waiting' })
+// Span结束上报
+childSpan.finish()
+parentSpan.finish()
+```
+
+### 4.1、HTTP远程手动探针
+```js
+tracer.inject(parentSpan, nodetracing.FORMAT_HTTP_HEADERS, headers)
+let parentSpan = tracer.extract(nodetracing.FORMAT_HTTP_HEADERS, headers)
+```
+
+### 4.1、GRPC远程手动探针
+```js
+tracer.inject(parentSpan, 'FORMAT_GRPC_METADATA', metadata)
+let parentSpan = tracer.extract('FORMAT_GRPC_METADATA', metadata)
+```
+
 
 ## 支持与帮助
 
