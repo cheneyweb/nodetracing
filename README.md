@@ -29,7 +29,7 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 ```shell
 cd server && npm run start
 
-open http://localhost:8080
+open http://localhost:3636/nodetracing/web/index.html
 ```
 ### 后台集群（规划中...）
 ```shell

@@ -21,7 +21,7 @@ const xcontroller = require('koa-xcontroller')								// koa-xcontroller，自�
 // 初始化应用服务
 const app = new Koa()
 // 启用静态资源服务
-app.use(mount(staticRoot, staticServer(__dirname + '/static')))
+app.use(mount(staticRoot, staticServer(`${__dirname}/web`)))
 app.use(mount('/', cors()))
 app.use(koaBody())
 
