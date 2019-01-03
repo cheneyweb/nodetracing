@@ -7,7 +7,7 @@
     },
     "server": {
         "port": 3636,
-        "staticRoot": "/xserver/static/",
+        "staticRoot": "/nodetracing/static/",
         "controllerRoot": "/nodetracing",
         "controllerDir": "/src/controller/"
     }
