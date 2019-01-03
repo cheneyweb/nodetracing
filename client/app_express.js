@@ -1,10 +1,13 @@
-const nodetracing = require('./src/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'S2', auto: true, stackLog: false, maxDuration: 5000 })
-// ==========模拟服务==========
+const nodetracing = require('nodetracing')
+// const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
+const tracer = new nodetracing.Tracer({ serviceName: 'Express', rpcAddress: 'localhost', auto: true, stackLog: false, maxDuration: 5000 })
 const express = require('express')
+
 const app = express()
-// 切面中间件
+
+// ==========切面中间件==========
 app.use(nodetracing.expressMiddleware())
+// ==========切面中间件==========
 
 app.get('/express', async (req, res) => {
     // await main()
@@ -12,9 +15,8 @@ app.get('/express', async (req, res) => {
     res.send('Y')
 })
 app.listen(1111, () => {
-    console.log('模拟服务启动端口：1111')
+    console.log('express模拟服务启动端口：1111')
 })
-// ==========模拟服务==========
 
 // async function main() {
 //     let parentSpan = tracer.startSpan('p2s')

@@ -1,19 +1,17 @@
 {
-  "name": "nodetracing-demo",
-  "version": "1.0.0",
+  "name": "nodetracing",
+  "version": "0.2.0",
   "description": "nodetracing的nodejs客户端,完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node index.js"
   },
   "author": "cheneyxu",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
-    "express": "^4.16.4",
-    "koa": "^2.6.2",
-    "koa-router": "^7.4.0",
-    "nodetracing": "^0.2.0",
+    "grpc": "^1.17.0",
+    "opentracing": "^0.14.3",
+    "ramda": "^0.26.1",
     "x-grpc": "^0.9.3"
   }
 }

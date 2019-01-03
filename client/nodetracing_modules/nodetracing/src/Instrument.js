@@ -1,6 +1,7 @@
 const asyncHooks = require('async_hooks')
 const R = require('ramda')
 const opentracing = require('opentracing')
+const grpc = require('grpc')
 /**
  * 自动探针
  */
@@ -10,13 +11,8 @@ class Instrument {
         let tracer = Instrument.tracer
         let contextMap = Instrument.contextMap
         let context = contextMap.get(executionAsyncId)
+        let getParent = Instrument._getParent
         // 获取父级上下文
-        function getParent(parentId) {
-            let parentContext = contextMap.get(parentId)
-            if (parentContext) {
-                return parentContext.span ? { id: parentId, span: parentContext.span } : getParent(parentContext.parentId)
-            }
-        }
         let parent = getParent(triggerAsyncId)
         // 非根Span
         if (parent) {
@@ -75,20 +71,13 @@ class Instrument {
         // }
         // return funcs
     }
-
     // axios切面中间件
     static axiosMiddleware() {
         let tracer = Instrument.tracer
-        let contextMap = Instrument.contextMap
-        // 获取父级上下文
-        function getParent(parentId) {
-            let parentContext = contextMap.get(parentId)
-            if (parentContext) {
-                return parentContext.span ? { id: parentId, span: parentContext.span } : getParent(parentContext.parentId)
-            }
-        }
+        let getParent = Instrument._getParent
         // span注入
         return (config) => {
+            // 获取父级上下文
             let parent = getParent(asyncHooks.triggerAsyncId())
             if (parent) {
                 tracer.inject(parent.span, opentracing.FORMAT_HTTP_HEADERS, config.headers)
@@ -146,6 +135,53 @@ class Instrument {
                 }
             })
             return next()
+        }
+    }
+    // grpc-client切面中间件
+    static grpcClientMiddleware() {
+        let tracer = Instrument.tracer
+        let getParent = Instrument._getParent
+        return (options, nextCall) => {
+            return new grpc.InterceptingCall(nextCall(options), {
+                start: function (metadata, listener, next) {
+                    let parent = getParent(asyncHooks.triggerAsyncId())
+                    if (parent) {
+                        tracer.inject(parent.span, 'FORMAT_GRPC_METADATA', metadata)
+                    }
+                    next(metadata, listener)
+                }
+            })
+        }
+    }
+    // grpc-server切面中间件
+    static grpcServerMiddleware() {
+        Instrument.routerMap = new Map()
+        return async (ctx, next) => {
+            let tracer = Instrument.tracer
+            let routerMap = Instrument.routerMap
+            let nodetracingMetadata = ctx.call.metadata.get('nodetracing')
+            let operationName = ctx.service.path
+            // 请求解包
+            if (nodetracingMetadata) {
+                // 获取父级上下文
+                let parent = tracer.extract('FORMAT_GRPC_METADATA', ctx.call.metadata)
+                // 生成span
+                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+            }
+            await next()
+            // 路由结束上报
+            if (nodetracingMetadata && routerMap.get(operationName)) {
+                routerMap.get(operationName).finish()
+                routerMap.delete(operationName)
+            }
+        }
+    }
+    // 获取父级上下文
+    static _getParent(parentId) {
+        let contextMap = Instrument.contextMap
+        let parentContext = contextMap.get(parentId)
+        if (parentContext) {
+            return parentContext.span ? { id: parentId, span: parentContext.span } : Instrument._getParent(parentContext.parentId)
         }
     }
 }

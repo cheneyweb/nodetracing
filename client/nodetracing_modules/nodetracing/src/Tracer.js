@@ -4,7 +4,6 @@ const opentracing = require('opentracing')
 const Span = require('./Span.js')
 const Instrument = require('./Instrument.js')
 // Remote Connection
-const rpcconfig = require('config')
 const RPCClient = require('x-grpc').RPCClient
 /**
  * OpenTracing Tracer implementation
@@ -16,9 +15,14 @@ class Tracer extends opentracing.Tracer {
         this._config = config
         this.serviceName = config.serviceName
 
-        new RPCClient(rpcconfig.grpc).connect().then((rpc) => {
+        new RPCClient({
+            port: 50051,
+            originalPath: true,
+            protosDir: `${__dirname}/protos/`,
+            serverAddress: config.rpcAddress
+        }).connect().then((rpc) => {
             this._rpc = rpc
-            console.info(`NodeTracing客户端已连接服务节点【执行环境:${process.env.NODE_ENV},端口:${rpcconfig.grpc.port}】`)
+            console.info(`NodeTracing客户端已连接追踪服务节点【${config.rpcAddress}:50051】`)
         })
 
         config.auto && this._auto()
@@ -53,7 +57,7 @@ class Tracer extends opentracing.Tracer {
                     contextMap.delete(key)
                 }
             })
-            console.log(`GC after：${contextMap.size}`)
+            // console.log(`GC after：${contextMap.size}`)
         }, this._config.maxDuration)
     }
     _startSpan(name, options) {
@@ -76,6 +80,9 @@ class Tracer extends opentracing.Tracer {
             case opentracing.FORMAT_HTTP_HEADERS:
                 carrier.nodetracing = encodeURI(JSON.stringify(spanContext))
                 break
+            case 'FORMAT_GRPC_METADATA':
+                carrier.add('nodetracing', encodeURI(JSON.stringify(spanContext)))
+                break
             default:
                 break
         }
@@ -85,6 +92,8 @@ class Tracer extends opentracing.Tracer {
         switch (format) {
             case opentracing.FORMAT_HTTP_HEADERS:
                 return JSON.parse(decodeURI(carrier.nodetracing))
+            case 'FORMAT_GRPC_METADATA':
+                return JSON.parse(decodeURI(carrier.get('nodetracing')))
             default:
                 break
         }

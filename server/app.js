@@ -2,7 +2,8 @@ const config = require('config')
 const RPCServer = require('x-grpc').RPCServer
 
 // Span收集服务
-new RPCServer(config.grpc).run()
+const rpcServer = new RPCServer(config.grpc)
+rpcServer.listen()
 console.info(`NodeTracing服务节点启动【执行环境:${process.env.NODE_ENV},端口:${config.grpc.port}】`)
 
 // 系统配置参数
