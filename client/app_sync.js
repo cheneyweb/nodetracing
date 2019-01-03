@@ -2,7 +2,7 @@
 // // ==========自动探针==========
 // const nodetracing = require('nodetracing')
 // // const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
-// const tracer = new nodetracing.Tracer({ serviceName: 'Sync', rpcAddress: 'localhost', auto: true, stackLog: false, maxDuration: 5000 })
+// const tracer = new nodetracing.Tracer({ serviceName: 'Sync', rpcAddress: 'localhost', rpcPort: '50051', auto: true, stackLog: false, maxDuration: 5000 })
 // // 切面注入需要监控的函数
 // main = nodetracing.aop(main)
 // phase1 = nodetracing.aop(phase1)

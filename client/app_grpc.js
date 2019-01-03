@@ -1,6 +1,6 @@
 // const nodetracing = require('nodetracing')
 const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'Grpc', rpcAddress: 'localhost', auto: true, stackLog: false, maxDuration: 30000 })
+const tracer = new nodetracing.Tracer({ serviceName: 'Grpc', rpcAddress: 'localhost', rpcPort: '50051', auto: true, stackLog: false, maxDuration: 30000 })
 const RPCServer = require('x-grpc').RPCServer
 const server = new RPCServer({
     port: 3333,
