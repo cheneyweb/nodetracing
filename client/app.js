@@ -1,7 +1,7 @@
 // ==========自动探针==========
 // const nodetracing = require('nodetracing')
 const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'S1', serverAddress: 'localhost', auto: true, stackLog: false, maxDuration: 5000 })
+const tracer = new nodetracing.Tracer({ serviceName: 'S1', serverAddress: 'localhost', auto: true, stackLog: false, maxDuration: 30000 })
 // async自动探针
 main = nodetracing.aop(main)
 phase1 = nodetracing.aop(phase1)

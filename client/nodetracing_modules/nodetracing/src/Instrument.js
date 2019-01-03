@@ -88,6 +88,7 @@ class Instrument {
     // express切面中间件
     static expressMiddleware() {
         Instrument.routerMap = new Map()
+        Instrument._gc()
         return (req, res, next) => {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
@@ -114,6 +115,7 @@ class Instrument {
     // koa切面中间件
     static koaMiddleware() {
         Instrument.routerMap = new Map()
+        Instrument._gc()
         return (ctx, next) => {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
@@ -156,6 +158,7 @@ class Instrument {
     // grpc-server切面中间件
     static grpcServerMiddleware() {
         Instrument.routerMap = new Map()
+        Instrument._gc()
         return async (ctx, next) => {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
@@ -183,6 +186,20 @@ class Instrument {
         if (parentContext) {
             return parentContext.span ? { id: parentId, span: parentContext.span } : Instrument._getParent(parentContext.parentId)
         }
+    }
+    // 垃圾回收
+    static _gc() {
+        let routerMap = Instrument.routerMap
+        let tracer = Instrument.tracer
+        setInterval(() => {
+            let now = Date.now()
+            routerMap.forEach((context, key) => {
+                if (now - context.span.startMs > tracer._config.maxDuration) {
+                    routerMap.delete(key)
+                }
+            })
+            console.log(`GC after：contextMap[${routerMap.size}]`)
+        }, tracer._config.maxDuration)
     }
 }
 

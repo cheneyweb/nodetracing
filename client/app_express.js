@@ -1,6 +1,6 @@
 // const nodetracing = require('nodetracing')
 const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'Express', rpcAddress: 'localhost', auto: true, stackLog: false, maxDuration: 5000 })
+const tracer = new nodetracing.Tracer({ serviceName: 'Express', rpcAddress: 'localhost', auto: true, stackLog: false, maxDuration: 30000 })
 const express = require('express')
 
 const app = express()

@@ -44,12 +44,12 @@ const nodetracing = require('nodetracing')
 ```
 
 ```js
-const tracer = new nodetracing.Tracer({ 
+const tracer = new nodetracing.Tracer({
 	serviceName: 'S1',		// 服务名称
 	rpcAddress: 'localhost',// 后台追踪收集服务地址
 	auto: true,				// 是否启用自动追踪
-	stackLog: false,		// 是否记录详细堆栈信息（包括代码行号位置等，内存消耗较大）
-	maxDuration: 5000 		// 最大函数执行时间（垃圾回收时间间隔）
+	stackLog: false,		// 是否记录详细堆栈信息（包括代码行号位置等，启用内存消耗较大）
+	maxDuration: 30000 		// 最大函数执行时间（垃圾回收时间间隔）
 })
 ```
 
