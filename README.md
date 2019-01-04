@@ -30,17 +30,17 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 cd server && npm run start
 ```
 >open browser http://localhost:3636/nodetracing/web/index.html
-### 1.2、后台WebUI服务（PORT：3636，36362）
+### 1.2、单独启动后台WebUI服务（PORT：3636，36362）
 ```shell
 cd server
 npm run web
 ```
-### 1.3 后台追踪服务（PORT：36361）
+### 1.3、单独启动后台追踪服务（PORT：36361）
 ```shell
 cd server
 npm run server
 ```
-### 1.4 ENV说明
+### 1.4、ENV说明
 ```
 WEB_PORT=3636			#服务于WebUI端口
 
