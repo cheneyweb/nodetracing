@@ -56,8 +56,9 @@ REPORT_ADDR=localhost		#WebUI服务地址，用于收集Span上报
 
 ### 2、后台集群（规划中...）
 ```shell
-docker network create nodetracing_overlay --driver overlay
-
+#docker compose
+docker-compose -f "docker-compose.yml" up -d
+#docker stack
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
