@@ -154,8 +154,8 @@ let parentSpan = tracer.extract(nodetracing.FORMAT_HTTP_HEADERS, headers)
 
 ### 4.1、GRPC远程手动探针
 ```js
-tracer.inject(parentSpan, 'FORMAT_GRPC_METADATA', metadata)
-let parentSpan = tracer.extract('FORMAT_GRPC_METADATA', metadata)
+tracer.inject(parentSpan, nodetracing.FORMAT_GRPC_METADATA, metadata)
+let parentSpan = tracer.extract(nodetracing.FORMAT_GRPC_METADATA, metadata)
 ```
 
 
