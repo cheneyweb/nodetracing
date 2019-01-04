@@ -25,6 +25,8 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - java（规划中...）
 
 ## 使用说明
+### 1、
+>一个典型的分布式追踪系统的部署包含以下步骤：启动收集服务集群 > 针对需要追踪的应用布置探针 > 伴随应用的运行，由可视化WebUI展示追踪信息
 ### 1.1、后台单例（PORT：3636，36361，36362）
 ```shell
 cd server && npm run start
@@ -55,7 +57,7 @@ docker network create nodetracing_overlay --driver overlay
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
-### 3、探针初始化（在应用入口首行引入）
+### 3、探针初始化（在应用入口首行）
 ```js
 const nodetracing = require('nodetracing')
 ```
@@ -68,7 +70,7 @@ const tracer = new nodetracing.Tracer({
 	maxDuration: 30000 		// 最大函数执行时间（垃圾回收时间间隔）
 })
 ```
-*由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针*
+*由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针...*
 ### 3.1、async自动探针（支持async函数）
 ```js
 func1 = nodetracing.aop(func1)
