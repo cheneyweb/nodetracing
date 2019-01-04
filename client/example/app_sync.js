@@ -1,4 +1,4 @@
-// 暂时无法支持同步函数追踪
+// 暂时无法支持同步函数追踪!!!
 // // ==========自动探针==========
 // const nodetracing = require('nodetracing')
 // // const nodetracing = require('./nodetracing_modules/nodetracing/index.js')

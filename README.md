@@ -31,7 +31,7 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - 针对需要追踪的应用布置探针 > 
 
 然后伴随应用的运行，由可视化WebUI界面展示追踪信息
-### 1.1、后台单例（PORT：3636，36361，36362）
+### 1.1、后台单例-快速开始（PORT：3636，36361，36362）
 ```shell
 cd server && npm run standalone
 ```
@@ -47,11 +47,13 @@ cd server
 npm run server
 ```
 ### 1.4、ENV说明
-```
-WEB_PORT=3636			#服务于WebUI端口
+```shell
+#设置WEB端口即可启动可视化服务
+WEB_PORT=3636
 
-RPC_PORT=36361			#服务于探针数据端口
-REPORT_ADDR=localhost		#WebUI服务地址，用于收集Span上报
+#追踪服务需要设置接收Span的RPC端口和上报Span的WEB服务地址
+RPC_PORT=36361
+REPORT_ADDR=localhost
 ```
 
 ### 2、后台集群（规划中...）
@@ -88,8 +90,9 @@ axios.interceptors.request.use(nodetracing.axiosMiddleware())
 ```
 ### 3.3、http响应自动探针（koa/express）
 ```js
+//koa
 app.use(nodetracing.koaMiddleware())
-OR
+//express
 app.use(nodetracing.expressMiddleware())
 ```
 ### 3.4、grpc-client自动探针（原生）
@@ -159,6 +162,13 @@ tracer.inject(parentSpan, nodetracing.FORMAT_GRPC_METADATA, metadata)
 let parentSpan = tracer.extract(nodetracing.FORMAT_GRPC_METADATA, metadata)
 ```
 
+### 5、探针使用例子
+>client/example/app_koa.js<br>
+client/example/app_express.js<br>
+client/example/app_grpc.js<br>
+client/example/app_manual.js<br>
+client/example/example.js<br>
+
 
 ## 支持与帮助
 
@@ -179,4 +189,4 @@ let parentSpan = tracer.extract(nodetracing.FORMAT_GRPC_METADATA, metadata)
 	2019.01.02:垃圾回收完善，最小化内存开销，实现HTTP自动探针（支持axios,koa,express）
 	2019.01.03:实现grpc自动探针
 	2019.01.04:分离追踪服务与WebUI服务，为跟踪服务集群化奠定基础
-	
+	<!-- 2019.01.05:服务连接等待/重试实现 -->

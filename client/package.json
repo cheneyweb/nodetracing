@@ -4,7 +4,7 @@
   "description": "nodetracing的nodejs客户端,完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node example/app_express.js & node example/app_koa.js & node example/app_grpc.js & node example/example.js"
   },
   "author": "cheneyxu",
   "license": "ISC",

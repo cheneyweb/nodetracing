@@ -1,5 +1,5 @@
 // const nodetracing = require('nodetracing')
-const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
+const nodetracing = require('../nodetracing_modules/nodetracing/index.js')
 const tracer = new nodetracing.Tracer({ serviceName: 'Koa', rpcAddress: 'localhost', rpcPort: '36361', auto: true, stackLog: false, maxDuration: 30000 })
 const Koa = require('koa')
 const Router = require('koa-router')

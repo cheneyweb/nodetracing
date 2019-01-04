@@ -1,5 +1,5 @@
 // const nodetracing = require('nodetracing')
-const nodetracing = require('./nodetracing_modules/nodetracing/index.js')
+const nodetracing = require('../nodetracing_modules/nodetracing/index.js')
 
 // ==========切面中间件==========
 appLocal = nodetracing.aop(appLocal)
