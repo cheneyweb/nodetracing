@@ -24,7 +24,7 @@
     "stylus-loader": "^3.0.2",
     "vue-cli-plugin-vuetify": "^0.4.6",
     "vue-template-compiler": "^2.5.21",
-    "vuetify-loader": "^1.0.8",
+    "vuetify-loader": "^1.1.0",
     "@grpc/proto-loader": "^0.3.0",
     "google-protobuf": "^3.6.1",
     "grpc": "^1.17.0",
