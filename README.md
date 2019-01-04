@@ -55,11 +55,10 @@ docker network create nodetracing_overlay --driver overlay
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
-### 3、探针初始化
+### 3、探针初始化（在应用入口首行引入）
 ```js
 const nodetracing = require('nodetracing')
 ```
-
 ```js
 const tracer = new nodetracing.Tracer({
 	serviceName: 'S1',		// 服务名称
@@ -69,7 +68,7 @@ const tracer = new nodetracing.Tracer({
 	maxDuration: 30000 		// 最大函数执行时间（垃圾回收时间间隔）
 })
 ```
-
+*由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针*
 ### 3.1、async自动探针（支持async函数）
 ```js
 func1 = nodetracing.aop(func1)
