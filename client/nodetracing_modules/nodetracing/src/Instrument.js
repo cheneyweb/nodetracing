@@ -23,7 +23,8 @@ class Instrument {
         else {
             context.span = tracer.startSpan(operationName)
         }
-        // context.span.setTag('category', '自定义标签')
+        // 跨度分类
+        context.span.setTag('category', 'async')
         // context.span.log({ event: '自定义日志事件' })
         return context.span
     }
@@ -80,6 +81,7 @@ class Instrument {
             // 获取父级上下文
             let parent = getParent(asyncHooks.triggerAsyncId())
             if (parent) {
+                parent.span.setTag('category', 'http')
                 tracer.inject(parent.span, opentracing.FORMAT_HTTP_HEADERS, config.headers)
             }
             return config
@@ -148,6 +150,7 @@ class Instrument {
                 start: function (metadata, listener, next) {
                     let parent = getParent(asyncHooks.triggerAsyncId())
                     if (parent) {
+                        parent.span.setTag('category', 'grpc')
                         tracer.inject(parent.span, 'FORMAT_GRPC_METADATA', metadata)
                     }
                     next(metadata, listener)

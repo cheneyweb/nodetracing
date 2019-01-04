@@ -86,43 +86,6 @@ class Span extends opentracing.Span {
         let p1 = ("00000000" + Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)).substr(-8)
         return `${p0}${p1}`
     }
-
-
-    // report() {
-    //     let references = []
-    //     for (let reference of this._references) {
-    //         references.push({
-    //             type: reference.type(),
-    //             // TODO 这里是否需要深度递归，或者是否可以只返回单层关系？
-    //             referencedContext: reference.referencedContext().span.report()
-    //         })
-    //     }
-    //     return {
-    //         serviceName,
-    //         id,
-    //         operationName,
-    //         startMs,
-    //         finishMs,
-    //         durationMs,
-    //         tags: JSON.stringify(this.tags),
-    //         logs: JSON.stringify(this.logs),
-    //         references: JSON.stringify(references),
-    //         originId,
-    //         parentId,
-    //         depth,
-    //     }
-    // }
-    // _calcDepth(_references) {
-    //     for (let reference of _references) {
-    //         let span = reference.referencedContext()
-    //         if (span.references.length > 0) {
-    //             this._calcDepth(span.references)
-    //         } else {
-    //             this._origin = span
-    //         }
-    //     }
-    //     this._depth++
-    // }
 }
 
 module.exports = Span

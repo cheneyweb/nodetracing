@@ -28,6 +28,7 @@ export default {
                 show: true
               }
             },
+            edgeSymbol: ['circle', 'arrow'],
             edgeLabel: {
               normal: {
                 formatter: function(param) {
