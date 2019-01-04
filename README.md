@@ -33,7 +33,7 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 然后伴随应用的运行，由可视化WebUI界面展示追踪信息
 ### 1.1、后台单例（PORT：3636，36361，36362）
 ```shell
-cd server && npm run start
+cd server && npm run standalone
 ```
 >open browser http://localhost:3636/nodetracing/web/index.html
 ### 1.2、单独启动后台WebUI服务（PORT：3636，36362）
