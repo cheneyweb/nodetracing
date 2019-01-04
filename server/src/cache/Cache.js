@@ -1,11 +1,12 @@
 module.exports = {
-    // span池
+    // span收集队列
     spanQueue: [],
     spanArr: [],
+    // span图索引
     spanMap: {},
     spanTracerMap: {},
     // 服务节点数组/图
     serviceSet: new Set(),
     serviceMap: {},
-    serviceDAG: { data: [], links: [], categories: [], legendData: [] }
+    serviceDAG: { data: [], links: [], categories: [], legend: { data: [] } }
 }

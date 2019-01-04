@@ -1,7 +1,7 @@
-const EchartReport = require('../../report/EChartReport.js')
+const CollectReport = require('../../report/CollectReport.js')
 const Cache = require('../../cache/Cache.js')
 module.exports = {
-  upload(call, cb) {
+  async upload(call, cb) {
     // 1、响应客户端
     // console.log(call.request)
     cb(null, { res: `Y` })
@@ -19,12 +19,14 @@ module.exports = {
     // 3、满足一定条件，生成报告
     let spanCount = Cache.spanQueue.length
     if (Cache.spanArr.length == 0 && spanCount >= 2) {
-      // 队列出队，进入处理池
+      // 出列
       for (i = 0; i < spanCount; i++) {
         Cache.spanArr.push(Cache.spanQueue.shift())
       }
-      // 使用处理池内的数据生成报告
-      new EchartReport().gen()
+      // 上报
+      await new CollectReport(Cache.spanArr).report()
+      // 清空
+      Cache.spanArr = []
     }
   }
 }

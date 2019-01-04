@@ -16,13 +16,13 @@ class Tracer extends opentracing.Tracer {
         this.serviceName = config.serviceName
 
         new RPCClient({
-            port: +config.rpcPort || 50051,
+            port: +config.rpcPort || 36361,
             originalPath: true,
             protosDir: `${__dirname}/protos/`,
             serverAddress: config.rpcAddress || 'localhost'
         }).connect().then((rpc) => {
             this._rpc = rpc
-            console.info(`NodeTracing-Client已连接服务节点【${config.rpcAddress}:50051】`)
+            console.info(`NodeTracing-Client已连接服务节点【${config.rpcAddress}:36361】`)
         })
 
         config.auto && this._auto()

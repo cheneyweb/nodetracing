@@ -81,7 +81,6 @@ class Instrument {
             // 获取父级上下文
             let parent = getParent(asyncHooks.triggerAsyncId())
             if (parent) {
-                parent.span.setTag('category', 'http')
                 tracer.inject(parent.span, opentracing.FORMAT_HTTP_HEADERS, config.headers)
             }
             return config
@@ -101,7 +100,9 @@ class Instrument {
                 let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, req.headers)
                 // 生成span
                 let operationName = `${req.method}${originalPath}`
-                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+                let span = tracer.startSpan(operationName, { childOf: parent })
+                span.setTag('category', 'http')
+                routerMap.set(operationName, span)
             }
             // 路由结束上报
             res.on('finish', () => {
@@ -128,7 +129,9 @@ class Instrument {
                 let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, ctx.header)
                 // 生成span
                 let operationName = `${ctx.method}${originalPath}`
-                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+                let span = tracer.startSpan(operationName, { childOf: parent })
+                span.setTag('category', 'http')
+                routerMap.set(operationName, span)
             }
             // 路由结束上报
             ctx.res.on('finish', () => {
@@ -150,7 +153,6 @@ class Instrument {
                 start: function (metadata, listener, next) {
                     let parent = getParent(asyncHooks.triggerAsyncId())
                     if (parent) {
-                        parent.span.setTag('category', 'grpc')
                         tracer.inject(parent.span, 'FORMAT_GRPC_METADATA', metadata)
                     }
                     next(metadata, listener)
@@ -172,7 +174,9 @@ class Instrument {
                 // 获取父级上下文
                 let parent = tracer.extract('FORMAT_GRPC_METADATA', ctx.call.metadata)
                 // 生成span
-                routerMap.set(operationName, tracer.startSpan(operationName, { childOf: parent }))
+                let span = tracer.startSpan(operationName, { childOf: parent })
+                span.setTag('category', 'grpc')
+                routerMap.set(operationName, span)
             }
             await next()
             // 路由结束上报

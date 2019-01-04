@@ -25,11 +25,28 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - java（规划中...）
 
 ## 使用说明
-### 1、后台单例
+### 1.1、后台单例（PORT：3636，36361，36362）
 ```shell
 cd server && npm run start
 ```
 >open browser http://localhost:3636/nodetracing/web/index.html
+### 1.2、后台WebUI服务（PORT：3636，36362）
+```shell
+cd server
+npm run web
+```
+### 1.3 后台追踪服务（PORT：36361）
+```shell
+cd server
+npm run server
+```
+### 1.4 ENV说明
+```
+WEB_PORT=3636			#服务于WebUI端口
+
+RPC_PORT=36361			#服务于探针数据端口
+REPORT_ADDR=localhost		#WebUI服务地址，用于收集Span上报
+```
 
 ### 2、后台集群（规划中...）
 ```shell
@@ -155,4 +172,5 @@ let parentSpan = tracer.extract('FORMAT_GRPC_METADATA', metadata)
 	2019.01.01:支持AsyncFunction自动探针
 	2019.01.02:垃圾回收完善，最小化内存开销，实现HTTP自动探针（支持axios,koa,express）
 	2019.01.03:实现grpc自动探针
+	2019.01.04:分离追踪服务与WebUI服务，为跟踪服务集群化奠定基础
 	

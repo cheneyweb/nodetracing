@@ -4,7 +4,9 @@
   "description": "完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
   "main": "app.js",
   "scripts": {
-    "start": "RPC_PORT=50051 WEB_PORT=3636 node app.js"
+    "start": "RPC_PORT=36361 WEB_PORT=3636 REPORT_ADDR=localhost node app.js",
+    "server": "RPC_PORT=36361 REPORT_ADDR=localhost node app.js",
+    "web": "WEB_PORT=3636 node app.js"
   },
   "author": "cheneyxu",
   "license": "ISC",

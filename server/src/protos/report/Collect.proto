@@ -1,0 +1,18 @@
+syntax = "proto3";
+package report;
+
+// 服务定义
+service Collect {
+  rpc upload (ReportReq) returns (ReportRes) {}
+}
+
+// 请求返回定义
+message ReportReq {
+  string rootSpans = 1;   // json
+  string childSpans = 2;  // json
+}
+
+message ReportRes {
+  string code = 1;
+  string res = 2;
+}
