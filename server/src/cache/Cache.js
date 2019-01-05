@@ -3,7 +3,6 @@ module.exports = {
     spanQueue: [],
     spanArr: [],
     // span图索引
-    spanMap: {},
     spanTracerMap: {},
     // 服务节点数组/图
     serviceSet: new Set(),

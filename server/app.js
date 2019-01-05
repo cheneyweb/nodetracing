@@ -1,5 +1,6 @@
 const RPCServer = require('x-grpc').RPCServer
 const RPCClient = require('x-grpc').RPCClient
+const LevelDB = require('./src/cache/LevelDB.js')
 const RPC_PORT = +process.env.RPC_PORT || 36361
 const WEB_PORT = +process.env.WEB_PORT
 const REPORT_ADDR = process.env.REPORT_ADDR
@@ -31,6 +32,9 @@ if (WEB_PORT) {
     app.listen(WEB_PORT)
     console.info(`NodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
     console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】`)
+
+    // 启动持久化
+    LevelDB.init('_db')
 }
 
 // 追踪服务

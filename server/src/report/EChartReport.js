@@ -1,5 +1,6 @@
 const Report = require('./Report.js')
 const Cache = require('../cache/Cache.js')
+const LevelDB = require('../cache/LevelDB.js')
 /**
  * Echart图表报告输出
  */
@@ -8,18 +9,17 @@ class EChartReport extends Report {
         super(spans)
     }
     // 生成报告
-    gen(reportData) {
+    async gen(reportData) {
         const rootSpans = reportData.rootSpans
         const childSpans = reportData.childSpans
-        const spanMap = Cache.spanMap
         const spanTracerMap = Cache.spanTracerMap
         const serviceSet = Cache.serviceSet
         const serviceMap = Cache.serviceMap
         const serviceDAG = Cache.serviceDAG
         // 1、处理根Span
         for (let span of rootSpans) {
-            // Map加入span
-            spanMap[span.id] = span
+            // 异步持久化Span
+            LevelDB.db.put(span.id, span)
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
@@ -38,8 +38,8 @@ class EChartReport extends Report {
         }
         // 2、处理非根Span        
         for (let span of childSpans) {
-            // Map加入span
-            spanMap[span.id] = span
+            // 异步持久化Span
+            LevelDB.db.put(span.id, span)
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
