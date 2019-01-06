@@ -1,6 +1,7 @@
 const RPCServer = require('x-grpc').RPCServer
 const RPCClient = require('x-grpc').RPCClient
 const LevelDB = require('./src/cache/LevelDB.js')
+const Cache = require('./src/cache/Cache.js')
 const RPC_PORT = +process.env.RPC_PORT || 36361
 const WEB_PORT = +process.env.WEB_PORT
 const REPORT_ADDR = process.env.REPORT_ADDR
@@ -10,7 +11,7 @@ if (WEB_PORT) {
     // 启动上报服务
     const reportServer = new RPCServer({ port: 36362, protosDir: '/src/protos/', implsDir: '/src/impls/' })
     reportServer.listen()
-    console.info(`NodeTracing-Report服务节点启动【端口：36362】`)
+    console.info('NodeTracing-Report服务已启动【端口：36362】')
 
     // 启动WEB服务
     const staticRoot = '/nodetracing/web/'									    // web服务根目录
@@ -31,10 +32,27 @@ if (WEB_PORT) {
     xcontroller.init(app, { controllerRoot: '/nodetracing', controllerDir: '/src/controller/' })
     app.listen(WEB_PORT)
     console.info(`NodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
-    console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】`)
+    console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】\n`)
 
     // 启动持久化
     LevelDB.init('_db')
+    // 缓存数据加载-服务集合
+    LevelDB.queryByPrefix('s_').then((resArr) => {
+        Cache.serviceSet = new Set(resArr)
+        console.info(`\nNodeTracing-WEB数据加载【服务集合】`)
+    })
+    // 缓存数据加载-服务拓扑
+    LevelDB.queryByPrefix('sdag').then((resArr) => {
+        Cache.serviceDAG = resArr[0] || { data: [], links: [], categories: [], legend: { data: [] } }
+        console.info(`NodeTracing-WEB数据加载【服务拓扑】`)
+    })
+    // 缓存数据加载-服务图集
+    LevelDB.queryByPrefix('sm_').then((resArr) => {
+        for (let res of resArr) {
+            Cache.serviceMap[res.serviceName] = { serviceName: res.serviceName, spanSet: new Set(res.spanSet), spanDAG: res.spanDAG }
+        }
+        console.info(`NodeTracing-WEB数据加载【服务图集】`)
+    })
 }
 
 // 追踪服务
@@ -47,6 +65,6 @@ if (REPORT_ADDR) {
     // 连接上报服务
     new RPCClient({ port: 36362, protosDir: '/src/protos/', serverAddress: REPORT_ADDR }).connect().then((reportRPC) => {
         global.reportRPC = reportRPC
-        console.info(`NodeTracing-Report已连接服务节点【${REPORT_ADDR}:36362】`)
+        console.info(`NodeTracing-Report服务已连接【${REPORT_ADDR}:36362】`)
     })
 }

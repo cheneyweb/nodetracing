@@ -3,7 +3,7 @@ module.exports = {
     spanQueue: [],
     spanArr: [],
     // 服务节点数组/图
-    serviceSet: new Set(),
-    serviceMap: {},
-    serviceDAG: { data: [], links: [], categories: [], legend: { data: [] } }
+    serviceSet: null,   // 启动时从持久化中加载
+    serviceDAG: null,   // 启动时从持久化中加载，{ data: [], links: [], categories: [], legend: { data: [] } }
+    serviceMap: {}      // 启动时从持久化中加载，{ serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
 }

@@ -9,52 +9,35 @@ class EChartReport extends Report {
         super(spans)
     }
     // 生成报告
-    gen(reportData) {
-        const rootSpans = reportData.rootSpans
-        const childSpans = reportData.childSpans
+    gen() {
         const serviceSet = Cache.serviceSet
         const serviceMap = Cache.serviceMap
         const serviceDAG = Cache.serviceDAG
         // 初始化收集缓存，用于批量持久化
         const ops = []
-        // 1、处理根Span
-        for (let span of rootSpans) {
-            // 收集span准备批量持久化
-            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
-            // 获取serviceName
+        for (let span of this.spans) {
             let serviceName = span.serviceName
-            // 获取service（TODO后期需要从持久化中获取）
-            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
-
-            ops.push({ type: 'put', key: `so_${serviceName}.${span.operationName}`, value: span.operationName })
-            ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${span.originId}`, value: span })
-
-            // 绘制service的spanDAG
-            let serviceReferenceContext = drawSpanDAG(service, span)
-            // 绘制serviceDAG
-            !serviceSet.has(serviceName) && drawServiceDAG(serviceDAG, service, serviceReferenceContext)
-            // 集合加入service
-            serviceSet.add(serviceName)
-        }
-        // 2、处理非根Span
-        for (let span of childSpans) {
-            // 收集span准备批量持久化
-            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
-            // 获取serviceName
-            let serviceName = span.serviceName
-            // 获取service（TODO后期需要从持久化中获取）
             let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
             // 绘制service的spanDAG
             let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG
-            !serviceSet.has(serviceName) && drawServiceDAG(serviceDAG, service, serviceReferenceContext)
-            // 集合加入service
-            serviceSet.add(serviceName)
+            if (!serviceSet.has(serviceName)) {
+                drawServiceDAG(serviceDAG, service, serviceReferenceContext)
+                ops.push({ type: 'put', key: `s_${serviceName}`, value: serviceName })
+                serviceSet.add(serviceName)
+            }
+            // 根span额外处理
+            if (span.depth == 0) {
+                ops.push({ type: 'put', key: `so_${serviceName}.${span.operationName}`, value: span.operationName })
+                ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${span.originId}`, value: span })
+            }
+            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
+            ops.push({ type: 'put', key: `sm_${serviceName}`, value: { serviceName, spanSet: Array.from(service.spanSet), spanDAG: service.spanDAG } })
         }
-        // 3、异步持久化Span
+        // 所有服务节点拓扑图持久化更新
+        ops.push({ type: 'put', key: 'sdag', value: serviceDAG })
+        // 异步持久化
         LevelDB.db.batch(ops)
-        // console.log(JSON.stringify(serviceMap))
-        // console.log(JSON.stringify(serviceDAG))
     }
 }
 

@@ -10,7 +10,6 @@ const router = new Router()
  * 获取单服务所有Operation
  */
 router.get('/:serviceName', async (ctx, next) => {
-    // let operationArr = []
     let operationArr = await LevelDB.queryByPrefix(`so_${ctx.params.serviceName}`)
     ctx.body = operationArr
 })

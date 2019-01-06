@@ -8,8 +8,7 @@ service Collect {
 
 // 请求返回定义
 message ReportReq {
-  string rootSpans = 1;   // json
-  string childSpans = 2;  // json
+  string spans = 1;   // json
 }
 
 message ReportRes {
