@@ -29,7 +29,7 @@ class EChartReport extends Report {
             // 根span额外处理
             if (span.depth == 0) {
                 ops.push({ type: 'put', key: `so_${serviceName}.${span.operationName}`, value: span.operationName })
-                ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${span.originId}`, value: span })
+                ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${4102416000000 - span.startMs}.${span.originId}`, value: span })
             }
             ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
             ops.push({ type: 'put', key: `sm_${serviceName}`, value: { serviceName, spanSet: Array.from(service.spanSet), spanDAG: service.spanDAG } })
