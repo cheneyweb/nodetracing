@@ -54,10 +54,9 @@ class Span extends opentracing.Span {
         this.durationMs = this.finishMs - this.startMs
         // 上报
         // console.log(JSON.stringify(this.context()))
-        this._tracer._rpc.invoke('tracer.Span.upload', this.context())
-        // .then((res)=>{
-        //     console.log(res)
-        // })
+        this._tracer._rpc.invoke('tracer.Span.upload', this.context()).catch((err) => {
+            console.error(err)
+        })
     }
     // extend method
     tracer() {

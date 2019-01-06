@@ -19,7 +19,7 @@ router.get('/:serviceName', async (ctx, next) => {
  */
 router.get('/:serviceName/:operationName', async (ctx, next) => {
     let rootSpanArr = []
-    let rootSpanArrRes = await LevelDB.queryByPrefix(`sos_${ctx.params.serviceName}.${ctx.params.operationName}`)
+    let rootSpanArrRes = await LevelDB.queryByPrefix(`sos_${ctx.params.serviceName}.${ctx.params.operationName}`, 20)
     for (let rootSpan of rootSpanArrRes) {
         rootSpanArr.push({
             id: rootSpan.id,

@@ -36,26 +36,26 @@ class Instrument {
         }
         // 前置AOP
         function before(args) {
-            let operationName = args.pop()
-            console.log(`before ${operationName}：${asyncHooks.executionAsyncId()}`)
-            Instrument.autoSpan(asyncHooks.triggerAsyncId(), asyncHooks.executionAsyncId(), operationName)
+            // let operationName = args.pop()
+            // console.log(`before ${operationName}：${asyncHooks.executionAsyncId()}`)
+            Instrument.autoSpan(asyncHooks.triggerAsyncId(), asyncHooks.executionAsyncId(), args.pop())
             return args
         }
         // 后置AOP
         async function afterAsync(res) {
             let contextMap = Instrument.contextMap
             let context = contextMap.get(asyncHooks.executionAsyncId())
-            let id = asyncHooks.executionAsyncId()
+            // let id = asyncHooks.executionAsyncId()
             await res
-            console.log(`after ${context.span.operationName}：${id}`)
+            // console.log(`after ${context.span.operationName}：${id}`)
             context.span.finish()
             return res
         }
         function after(res) {
             let contextMap = Instrument.contextMap
             let context = contextMap.get(asyncHooks.executionAsyncId())
-            let id = asyncHooks.executionAsyncId()
-            console.log(`after ${context.operationName}：${id}`)
+            // let id = asyncHooks.executionAsyncId()
+            // console.log(`after ${context.operationName}：${id}`)
             context.span.finish()
             return res
         }

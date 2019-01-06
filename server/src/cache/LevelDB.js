@@ -3,8 +3,11 @@ class LevelDB {
     static init(path) {
         LevelDB.db = level(path, { valueEncoding: "json" })
     }
-    static queryByPrefix(prefix) {
+    static queryByPrefix(prefix, limit) {
         let options = { gte: prefix, lte: prefix.substring(0, prefix.length - 1) + String.fromCharCode(prefix[prefix.length - 1].charCodeAt() + 1) }
+        if (limit) {
+            options.limit = limit
+        }
         return new Promise((resolve, reject) => {
             let resArr = []
             LevelDB.db.createValueStream(options)
