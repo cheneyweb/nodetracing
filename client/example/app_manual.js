@@ -1,6 +1,6 @@
 // const nodetracing = require('nodetracing')
 const nodetracing = require('../nodetracing_modules/nodetracing/index.js')
-const tracer = new nodetracing.Tracer({ serviceName: 'S2', rpcAddress: 'localhost', rpcPort: '36361' })
+const tracer = new nodetracing.Tracer({ serviceName: 'B1', rpcAddress: 'localhost', rpcPort: '36361' })
 const axios = require('axios')
 
 async function main() {

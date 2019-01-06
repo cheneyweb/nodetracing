@@ -1,4 +1,3 @@
-const CollectReport = require('../../report/CollectReport.js')
 const Cache = require('../../cache/Cache.js')
 module.exports = {
   async upload(call, cb) {
@@ -15,19 +14,6 @@ module.exports = {
     span.startMs = +span.startMs
     span.finishMs = +span.finishMs
     Cache.spanQueue.push(span)
-
-    // 3、满足一定条件，生成报告
-    let spanCount = Cache.spanQueue.length
-    if (Cache.spanArr.length == 0 && spanCount >= 2) {
-      // 出列
-      for (i = 0; i < spanCount; i++) {
-        Cache.spanArr.push(Cache.spanQueue.shift())
-      }
-      // 上报
-      await new CollectReport(Cache.spanArr).report()
-      // 清空
-      Cache.spanArr = []
-    }
   }
 }
 
