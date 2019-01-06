@@ -1,4 +1,3 @@
-const Cache = require('../cache/Cache.js')
 const LevelDB = require('../cache/LevelDB.js')
 // 路由相关
 const Router = require('koa-router')
