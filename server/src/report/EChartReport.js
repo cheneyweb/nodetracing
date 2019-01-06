@@ -12,14 +12,15 @@ class EChartReport extends Report {
     async gen(reportData) {
         const rootSpans = reportData.rootSpans
         const childSpans = reportData.childSpans
-        const spanTracerMap = Cache.spanTracerMap
         const serviceSet = Cache.serviceSet
         const serviceMap = Cache.serviceMap
         const serviceDAG = Cache.serviceDAG
+        // 初始化收集缓存，用于批量持久化
+        const ops = []
         // 1、处理根Span
         for (let span of rootSpans) {
-            // 异步持久化Span
-            LevelDB.db.put(span.id, span)
+            // 收集span准备批量持久化
+            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
@@ -27,8 +28,6 @@ class EChartReport extends Report {
             // 将根Span按照service分组
             service.rootSpanMap[span.operationName] = service.rootSpanMap[span.operationName] || []
             service.rootSpanMap[span.operationName].push(span)
-            // 跟踪根span
-            tracerRootSpan(spanTracerMap, span)
             // 绘制service的spanDAG
             let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG
@@ -36,16 +35,14 @@ class EChartReport extends Report {
             // 集合加入service
             serviceSet.add(serviceName)
         }
-        // 2、处理非根Span        
+        // 2、处理非根Span
         for (let span of childSpans) {
-            // 异步持久化Span
-            LevelDB.db.put(span.id, span)
+            // 收集span准备批量持久化
+            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
             let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
-            // 跟踪span
-            tracerSpan(spanTracerMap, span)
             // 绘制service的spanDAG
             let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG
@@ -53,32 +50,11 @@ class EChartReport extends Report {
             // 集合加入service
             serviceSet.add(serviceName)
         }
-        // console.log(JSON.stringify(spanTracerMap))
+        // 3、异步持久化Span
+        LevelDB.db.batch(ops)
         // console.log(JSON.stringify(serviceMap))
         // console.log(JSON.stringify(serviceDAG))
     }
-}
-
-// 从根span出发，跟踪关联所有span集合，开始
-function tracerRootSpan(spanTracerMap, span) {
-    if (!spanTracerMap[span.originId]) {
-        spanTracerMap[span.originId] = { depth: 0, spanArr: [span] }
-    } else {
-        spanTracerMap[span.originId].spanArr[0] = span
-    }
-}
-// 从根span出发，跟踪关联所有span集合，后续
-function tracerSpan(spanTracerMap, span) {
-    // 若根span未到达，先虚拟
-    if (!spanTracerMap[span.originId]) {
-        spanTracerMap[span.originId] = { depth: 0, spanArr: [{ id: span.originId }] }
-    }
-    // 更新跟踪深度
-    if (spanTracerMap[span.originId].depth < span.depth) {
-        spanTracerMap[span.originId].depth = span.depth
-    }
-    // 跟踪集合增加
-    spanTracerMap[span.originId].spanArr.push(span)
 }
 
 // 绘制单服务Span拓扑图
@@ -149,6 +125,5 @@ function drawServiceDAG(serviceDAG, service, serviceReferenceContext) {
         categories.push({ name: category })
     }
 }
-
 
 module.exports = EChartReport
