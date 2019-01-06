@@ -9,7 +9,7 @@ class EChartReport extends Report {
         super(spans)
     }
     // 生成报告
-    async gen(reportData) {
+    gen(reportData) {
         const rootSpans = reportData.rootSpans
         const childSpans = reportData.childSpans
         const serviceSet = Cache.serviceSet
@@ -24,10 +24,11 @@ class EChartReport extends Report {
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
-            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
-            // 将根Span按照service分组
-            service.rootSpanMap[span.operationName] = service.rootSpanMap[span.operationName] || []
-            service.rootSpanMap[span.operationName].push(span)
+            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
+
+            ops.push({ type: 'put', key: `so_${serviceName}.${span.operationName}`, value: span.operationName })
+            ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${span.originId}`, value: span })
+
             // 绘制service的spanDAG
             let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG
@@ -42,7 +43,7 @@ class EChartReport extends Report {
             // 获取serviceName
             let serviceName = span.serviceName
             // 获取service（TODO后期需要从持久化中获取）
-            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
+            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
             // 绘制service的spanDAG
             let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG

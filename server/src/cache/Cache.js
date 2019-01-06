@@ -1,5 +1,5 @@
 module.exports = {
-    // span收集队列
+    // span收集队列/处理池
     spanQueue: [],
     spanArr: [],
     // 服务节点数组/图

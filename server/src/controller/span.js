@@ -14,9 +14,9 @@ const _ = require('lodash')
 router.get('/tracer/:spanId', async (ctx, next) => {
     let serviceArr = Array.from(Cache.serviceSet)
     let spanArrRes = await LevelDB.queryByPrefix(ctx.params.spanId)
-    let depth = maxDepthSpan ? maxDepthSpan.depth : 0
     let spans = _.orderBy(spanArrRes, ['depth', 'startMs'])
     let maxDepthSpan = _.maxBy(spanArrRes, 'depth')
+    let depth = maxDepthSpan ? maxDepthSpan.depth : 0
     let spanArr = []
     for (let span of spans) {
         spanArr.push({
