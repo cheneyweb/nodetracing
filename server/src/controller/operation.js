@@ -5,6 +5,8 @@ const Router = require('koa-router')
 // const log = require('tracer').colorConsole({ level: require('config').get('log').level })
 // 初始化路由
 const router = new Router()
+// 工具相关
+const _ = require('lodash')
 
 /**
  * 获取单服务所有Operation
@@ -28,7 +30,7 @@ router.get('/:serviceName/:operationName', async (ctx, next) => {
             duration: rootSpan.finishMs - rootSpan.startMs
         })
     }
-    ctx.body = rootSpanArr
+    ctx.body = _.orderBy(rootSpanArr, ['startMs'], ['desc'])
 })
 
 module.exports = router

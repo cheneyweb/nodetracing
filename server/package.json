@@ -19,7 +19,7 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-xcontroller": "^1.2.0",
-    "level": "^4.0.0",
+    "level": "^5.0.0-0",
     "lodash": "^4.17.11",
     "opentracing": "^0.14.3",
     "x-grpc": "^0.9.3"

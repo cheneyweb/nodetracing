@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/nodetracing/web/precache-manifest.e40d7ccfb1b25be4598ed1865185d276.js"
+  "/nodetracing/web/precache-manifest.6d0029c3f7cc522ff339b677b1a99f2b.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "nodetracing-web"});

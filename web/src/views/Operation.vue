@@ -8,7 +8,13 @@
         <v-select :items="operations" v-model="selectedOperation" @change="getOperationSpans"></v-select>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :headers="headers" :items="spans" hide-actions :loading="loading">
+        <v-data-table
+          :headers="headers"
+          :items="spans"
+          hide-actions
+          :loading="loading"
+          disable-initial-sort="true"
+        >
           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
             <td
