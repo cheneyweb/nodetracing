@@ -2,7 +2,7 @@
   <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs12>
-        <v-select :items="services" v-model="selectedService" @change="changeService"></v-select>
+        <v-select :items="services" v-model="selectedService" @change="changeService" label="Select service"></v-select>
       </v-flex>
       <v-flex xs12>
         <div id="dag" style="width:100%;height:600px"></div>
@@ -39,7 +39,7 @@ export default {
       this.$echarts.init(document.getElementById("dag")).setOption({
         backgroundColor: "gray",
         title: {
-          text: `【${serviceName}】 Spans DAG`
+          text: `【${serviceName || 'Select service'}】 Spans DAG`
         },
         series: [
           {

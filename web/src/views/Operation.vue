@@ -2,10 +2,10 @@
   <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs6>
-        <v-select :items="services" v-model="selectedService" @change="getServiceOperations"></v-select>
+        <v-select :items="services" v-model="selectedService" @change="getServiceOperations" label="Select service"></v-select>
       </v-flex>
       <v-flex xs6>
-        <v-select :items="operations" v-model="selectedOperation" @change="getOperationSpans"></v-select>
+        <v-select :items="operations" v-model="selectedOperation" @change="getOperationSpans" label="Select operation"></v-select>
       </v-flex>
       <v-flex xs12>
         <v-data-table
