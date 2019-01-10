@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Login from './views/Login.vue'
+import Login from './views/Login.vue'
 import Topology from './views/Topology.vue'
 import Service from './views/Service.vue'
 import Operation from './views/Operation.vue'
@@ -12,13 +12,13 @@ export default new Router({
     {
       path: '/',
       name: 'login',
+      component: Login
+    },
+    {
+      path: '/home',
+      name: 'home',
       component: Topology
     },
-    // {
-    //   path: '/home',
-    //   name: 'home',
-    //   component: Home
-    // },
     {
       path: '/topology',
       name: 'topology',

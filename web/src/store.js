@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-const domain = 'http://localhost:3636'
+const domain = `http://${window.location.hostname}:3636`
 
 Vue.use(Vuex)
 
