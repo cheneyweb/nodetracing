@@ -10,7 +10,7 @@ const router = new Router()
  * 获取单服务所有Operation
  */
 router.get('/:serviceName', async (ctx, next) => {
-    let operationArr = await LevelDB.queryByPrefix(`so_${ctx.params.serviceName}`)
+    let operationArr = await LevelDB.queryByPrefix(`${LevelDB.PREFIX_SERVICE_OPERATION}${ctx.params.serviceName}`)
     ctx.body = operationArr
 })
 
@@ -19,7 +19,7 @@ router.get('/:serviceName', async (ctx, next) => {
  */
 router.get('/:serviceName/:operationName', async (ctx, next) => {
     let rootSpanArr = []
-    let rootSpanArrRes = await LevelDB.queryByPrefix(`sos_${ctx.params.serviceName}.${ctx.params.operationName}`, 20)
+    let rootSpanArrRes = await LevelDB.queryByPrefix(`${LevelDB.PREFIX_SERVICE_OPERATION_SPAN}${ctx.params.serviceName}.${ctx.params.operationName}`, 20)
     for (let rootSpan of rootSpanArrRes) {
         rootSpanArr.push({
             id: rootSpan.id,

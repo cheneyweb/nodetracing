@@ -2,6 +2,11 @@ const level = require('level')
 class LevelDB {
     static init(path) {
         LevelDB.db = level(path, { valueEncoding: "json" })
+        LevelDB.PREFIX_SERVICE_SET = 's_'
+        LevelDB.PREFIX_SERVICE_OPERATION = 'so_'
+        LevelDB.PREFIX_SERVICE_OPERATION_SPAN = 'sos_'
+        LevelDB.PREFIX_SERVICE_MAP = 'sm_'
+        LevelDB.PREFIX_SERVICE_DAG = 'sdag'
     }
     static queryByPrefix(prefix, limit) {
         let options = { gte: prefix, lte: prefix.substring(0, prefix.length - 1) + String.fromCharCode(prefix[prefix.length - 1].charCodeAt() + 1) }

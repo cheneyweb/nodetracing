@@ -39,17 +39,17 @@ if (WEB_PORT) {
     // 启动持久化
     LevelDB.init('_db')
     // 缓存数据加载-服务集合
-    LevelDB.queryByPrefix('s_').then((resArr) => {
+    LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_SET).then((resArr) => {
         Cache.serviceSet = new Set(resArr)
         console.info(`\nNodeTracing-WEB数据加载【服务集合】`)
     })
     // 缓存数据加载-服务拓扑
-    LevelDB.queryByPrefix('sdag').then((resArr) => {
+    LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_DAG).then((resArr) => {
         Cache.serviceDAG = resArr[0] || { data: [], links: [], categories: [], legend: { data: [] } }
         console.info(`NodeTracing-WEB数据加载【服务拓扑】`)
     })
     // 缓存数据加载-服务图集
-    LevelDB.queryByPrefix('sm_').then((resArr) => {
+    LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_MAP).then((resArr) => {
         for (let res of resArr) {
             Cache.serviceMap[res.serviceName] = { serviceName: res.serviceName, spanSet: new Set(res.spanSet), spanDAG: res.spanDAG }
         }

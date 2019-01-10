@@ -23,16 +23,16 @@ class EChartReport extends Report {
             // 绘制serviceDAG
             if (!serviceSet.has(serviceName)) {
                 drawServiceDAG(serviceDAG, service, serviceReferenceContext)
-                ops.push({ type: 'put', key: `s_${serviceName}`, value: serviceName })
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_SET}${serviceName}`, value: serviceName })
                 serviceSet.add(serviceName)
             }
             // 根span额外处理
             if (span.depth == 0) {
-                ops.push({ type: 'put', key: `so_${serviceName}.${span.operationName}`, value: span.operationName })
-                ops.push({ type: 'put', key: `sos_${serviceName}.${span.operationName}.${4102416000000 - span.startMs}.${span.originId}`, value: span })
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_OPERATION}${serviceName}.${span.operationName}`, value: span.operationName })
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_OPERATION_SPAN}${serviceName}.${span.operationName}.${4102416000000 - span.startMs}.${span.originId}`, value: span })
             }
             ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
-            ops.push({ type: 'put', key: `sm_${serviceName}`, value: { serviceName, spanSet: Array.from(service.spanSet), spanDAG: service.spanDAG } })
+            ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_MAP}${serviceName}`, value: { serviceName, spanSet: Array.from(service.spanSet), spanDAG: service.spanDAG } })
         }
         // 所有服务节点拓扑图持久化更新
         ops.push({ type: 'put', key: 'sdag', value: serviceDAG })
