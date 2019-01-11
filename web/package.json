@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
     "dayjs": "^1.7.8",
     "echarts": "^4.2.0-rc.2",
     "register-service-worker": "^1.5.2",

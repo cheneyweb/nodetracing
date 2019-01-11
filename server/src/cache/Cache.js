@@ -1,4 +1,7 @@
 module.exports = {
+    // 帐号密码
+    username: null,
+    password: null,
     // span收集队列/处理池
     spanQueue: [],
     spanArr: [],

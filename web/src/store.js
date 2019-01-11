@@ -55,10 +55,10 @@ export default new Vuex.Store({
       } else {
         return []
       }
+    },
+    async login(state, data) {
+      const res = await axios.post(`${domain}/nodetracing/user/login`, data)
+      return res.data
     }
-    // async login(state, data) {
-    //   const res = await axios.post(`${domain}/gserver/auth/login`, data)
-    //   return res.data
-    // }
   }
 })

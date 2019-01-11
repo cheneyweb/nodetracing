@@ -7,6 +7,8 @@ const RPC_PORT = +process.env.RPC_PORT || 36361
 const WEB_PORT = +process.env.WEB_PORT
 const REPORT_ADDR = process.env.REPORT_ADDR
 const REPORT_INTERVAL = process.env.REPORT_INTERVAL || 5000
+const USERNAME = process.env.USERNAME || 'admin'
+const PASSWORD = process.env.PASSWORD || '123456'
 
 // WebUI应用服务
 if (WEB_PORT) {
@@ -36,6 +38,9 @@ if (WEB_PORT) {
     console.info(`NodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
     console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】\n`)
 
+    // 载入帐号密码
+    Cache.username = USERNAME
+    Cache.password = PASSWORD
     // 启动持久化
     LevelDB.init('_db')
     // 缓存数据加载-服务集合
