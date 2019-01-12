@@ -2,7 +2,12 @@
   <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs12>
-        <v-select :items="services" v-model="selectedService" @change="changeService" label="Select service"></v-select>
+        <v-select
+          :items="services"
+          v-model="selectedService"
+          @change="changeService"
+          label="Select service"
+        ></v-select>
       </v-flex>
       <v-flex xs12>
         <div id="dag" style="width:100%;height:600px"></div>
@@ -36,10 +41,14 @@ export default {
     // 绘制DAG
     async drawDAG(serviceName) {
       let res = await this.$store.dispatch("spanDAG", { serviceName });
+      res.legend.textStyle = { color: "white" };
       this.$echarts.init(document.getElementById("dag")).setOption({
-        backgroundColor: "gray",
+        backgroundColor: "#303030",
         title: {
-          text: `【${serviceName || 'Select service'}】 Spans DAG`
+          text: `【${serviceName || "Select service"}】 Spans DAG`,
+          textStyle: {
+            color: "white"
+          }
         },
         series: [
           {
@@ -71,10 +80,10 @@ export default {
               // repulsion: 100,
               // gravity: 100,
               // initLayout: 'circular',
-              repulsion: 60,
+              repulsion: 60
               // edgeLength: 2
             },
-            draggable:true,
+            draggable: true,
             lineStyle: {
               normal: {
                 opacity: 0.9,

@@ -2,10 +2,20 @@
   <v-container fluid fill-height pt-0>
     <v-layout wrap>
       <v-flex xs6>
-        <v-select :items="services" v-model="selectedService" @change="getServiceOperations" label="Select service"></v-select>
+        <v-select
+          :items="services"
+          v-model="selectedService"
+          @change="getServiceOperations"
+          label="Select service"
+        ></v-select>
       </v-flex>
       <v-flex xs6>
-        <v-select :items="operations" v-model="selectedOperation" @change="getOperationSpans" label="Select operation"></v-select>
+        <v-select
+          :items="operations"
+          v-model="selectedOperation"
+          @change="getOperationSpans"
+          label="Select operation"
+        ></v-select>
       </v-flex>
       <v-flex xs12>
         <v-data-table
@@ -13,7 +23,7 @@
           :items="spans"
           hide-actions
           :loading="loading"
-          disable-initial-sort="true"
+          :disable-initial-sort="disableInitialSort"
         >
           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
@@ -64,6 +74,7 @@ export default {
       spans: [],
       selectedService: "",
       selectedOperation: "",
+      disableInitialSort: true,
       headers: [
         {
           text: "Operation",

@@ -15,7 +15,7 @@ if (WEB_PORT) {
     // 启动上报服务
     const reportServer = new RPCServer({ port: 36362, protosDir: '/src/protos/', implsDir: '/src/impls/' })
     reportServer.listen()
-    console.info('NodeTracing-Report服务已启动【端口：36362】')
+    console.info('WEB服务\nNodeTracing-Report服务已启动【端口：36362】')
 
     // 启动WEB服务
     const staticRoot = '/nodetracing/web/'									    // web服务根目录
@@ -36,7 +36,7 @@ if (WEB_PORT) {
     xcontroller.init(app, { controllerRoot: '/nodetracing', controllerDir: '/src/controller/' })
     app.listen(WEB_PORT)
     console.info(`NodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
-    console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】\n`)
+    console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】`)
 
     // 载入帐号密码
     Cache.username = USERNAME
@@ -46,7 +46,7 @@ if (WEB_PORT) {
     // 缓存数据加载-服务集合
     LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_SET).then((resArr) => {
         Cache.serviceSet = new Set(resArr)
-        console.info(`\nNodeTracing-WEB数据加载【服务集合】`)
+        console.info(`数据加载\nNodeTracing-WEB数据加载【服务集合】`)
     })
     // 缓存数据加载-服务拓扑
     LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_DAG).then((resArr) => {
@@ -67,7 +67,7 @@ if (REPORT_ADDR) {
     // Span收集服务节点
     const rpcServer = new RPCServer({ port: RPC_PORT, protosDir: '/src/protos/', implsDir: '/src/impls/' })
     rpcServer.listen()
-    console.info(`NodeTracing-RPC服务节点启动【端口：${RPC_PORT}】`)
+    console.info(`节点服务\nNodeTracing-RPC服务节点启动【端口：${RPC_PORT}】`)
     // 连接上报服务
     new RPCClient({ port: 36362, protosDir: '/src/protos/', serverAddress: REPORT_ADDR }).connect().then((reportRPC) => {
         global.reportRPC = reportRPC

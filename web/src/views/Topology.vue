@@ -12,10 +12,14 @@ export default {
   methods: {
     async drawDAG() {
       let res = await this.$store.dispatch("serviceDAG", {});
+      res.legend.textStyle = { color: "white" };
       this.$echarts.init(document.getElementById("dag")).setOption({
-        backgroundColor: "gray",
+        backgroundColor: "#303030",
         title: {
-          text: "Services DAG"
+          text: "Services DAG",
+          textStyle: {
+            color: "white"
+          }
         },
         series: [
           {
@@ -28,7 +32,7 @@ export default {
                 show: true
               }
             },
-            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbol: ["circle", "arrow"],
             edgeLabel: {
               normal: {
                 formatter: function(param) {
