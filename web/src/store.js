@@ -8,11 +8,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drawer: false
+    openSpan: false
   },
   mutations: {
-    changeDrawer(state, params) {
-      state.drawer = params
+    openSpan(state, params) {
+      state.openSpan = params
     }
   },
   actions: {
