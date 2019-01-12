@@ -1,22 +1,20 @@
 <template>
-  <v-layout row justify-center>
-    <v-dialog v-model="openSpan" width="1000">
-      <v-card>
-        <v-card-title
-          class="headline grey darken-2"
-          primary-title
-        >{{selectedOperation}}：{{dialogTitle}}</v-card-title>
-        <!-- <v-card-text> -->
-        <div id="gantt" style="width:100%;height:500px"></div>
-        <!-- </v-card-text> -->
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click="openSpan = false">关闭</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+  <v-dialog v-model="openSpan" width="1000">
+    <v-card>
+      <v-card-title
+        class="headline grey darken-2"
+        primary-title
+      >{{selectedOperation}}：{{dialogTitle}}</v-card-title>
+      <!-- <v-card-text> -->
+      <div id="gantt" style="width:100%;height:500px"></div>
+      <!-- </v-card-text> -->
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" flat @click="openSpan = false">关闭</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script>
 export default {
