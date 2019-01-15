@@ -67,3 +67,17 @@ axios.interceptors.request.use((config) => {
   config.headers.token = localStorage.getItem('token')
   return config
 })
+axios.interceptors.response.use(data => {
+  // if (data.status && data.status == 200 && data.data.err) {
+  //   Message.error({ message: data.data.msg });
+  //   return;
+  // }
+  return data
+}, err => {
+  if (err.response.status == 401) {
+    localStorage.clear()
+    window.location.href = window.location.href.split('#')[0]
+    return Promise.resolve(err)
+  }
+})
+

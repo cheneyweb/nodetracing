@@ -25,6 +25,7 @@ if (WEB_PORT) {
     const staticServer = require('koa-static')									// 静态资源服务中间件
     const mount = require('koa-mount')											// 挂载点中间件
     // 应用中间件
+    const xauth = require('koa-xauth')                                          // 认证中间件
     const xcontroller = require('koa-xcontroller')								// 自动路由中间件
     // 初始化应用服务
     const app = new Koa()
@@ -32,6 +33,8 @@ if (WEB_PORT) {
     app.use(mount(staticRoot, staticServer(`${__dirname}/web`)))
     app.use(mount('/', cors()))
     app.use(koaBody())
+    // koa-xauth中间件
+    app.use(xauth({ secret: PASSWORD, pass: ["/nodetracing/user/login"] }))
     // koa-xcontroller中间件
     xcontroller.init(app, { controllerRoot: '/nodetracing', controllerDir: '/src/controller/' })
     app.listen(WEB_PORT)
