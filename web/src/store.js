@@ -56,6 +56,10 @@ export default new Vuex.Store({
         return []
       }
     },
+    async getCount(state, data) {
+      const res = await axios.get(`${domain}/nodetracing/dashboard/count`)
+      return res.data
+    },
     async login(state, data) {
       const res = await axios.post(`${domain}/nodetracing/user/login`, data)
       return res.data

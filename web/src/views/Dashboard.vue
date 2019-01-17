@@ -7,12 +7,26 @@
             <v-card
               slot-scope="{hover}"
               :class="`elevation-${hover?24:0}`"
+              color="teal"
+              dark
+              tile
+              flat
+            >
+              <v-card-title>Services：{{stat.serviceCount}}</v-card-title>
+            </v-card>
+          </v-hover>
+        </v-flex>
+        <v-flex d-fle xs4>
+          <v-hover>
+            <v-card
+              slot-scope="{hover}"
+              :class="`elevation-${hover?24:0}`"
               color="blue-grey"
               dark
               tile
               flat
             >
-              <v-card-title>Services：0</v-card-title>
+              <v-card-text>Operations：{{stat.operationCount}}</v-card-text>
             </v-card>
           </v-hover>
         </v-flex>
@@ -26,21 +40,7 @@
               tile
               flat
             >
-              <v-card-text>Operations：0</v-card-text>
-            </v-card>
-          </v-hover>
-        </v-flex>
-        <v-flex d-fle xs4>
-          <v-hover>
-            <v-card
-              slot-scope="{hover}"
-              :class="`elevation-${hover?24:0}`"
-              color="brown"
-              dark
-              tile
-              flat
-            >
-              <v-card-text>Spans：0</v-card-text>
+              <v-card-text>Cluster：{{stat.clusterCount}}</v-card-text>
             </v-card>
           </v-hover>
         </v-flex>
@@ -62,10 +62,19 @@
 
 <script>
 export default {
+  created() {
+    this.getCount();
+  },
   mounted() {
     this.drawGauge();
   },
   data: () => ({
+    stat: {
+      serviceCount: 0,
+      operationCount: 0,
+      clusterCount: 0,
+      durationAvg: 0
+    },
     open: ["public"],
     files: {
       html: "mdi-language-html5",
@@ -95,9 +104,16 @@ export default {
     ]
   }),
   methods: {
+    async getCount() {
+      this.stat = await this.$store.dispatch("getCount", {});
+      this.drawGauge();
+    },
+    async getDuration() {
+      // let res = await this.$store.dispatch("spanDAG", { serviceName });
+      this.drawGauge();
+    },
     // 绘制仪表盘
     async drawGauge(serviceName) {
-      // let res = await this.$store.dispatch("spanDAG", { serviceName });
       this.$echarts.init(document.getElementById("chart")).setOption({
         tooltip: {
           formatter: "{a} <br/>{b} : {c}ms"
@@ -115,7 +131,7 @@ export default {
             min: 0,
             max: 5000,
             detail: { formatter: "{value}ms" },
-            data: [{ value: 0, name: "Runtime" }],
+            data: [{ value: this.stat.durationAvg, name: "Runtime" }],
             axisLine: {
               lineStyle: {
                 color: [[0.2, "#91c7ae"], [0.5, "#63869e"], [1, "#c23531"]]
