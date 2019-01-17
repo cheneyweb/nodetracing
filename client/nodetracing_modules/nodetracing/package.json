@@ -9,9 +9,9 @@
   "author": "cheneyxu",
   "license": "ISC",
   "dependencies": {
-    "grpc": "^1.17.0",
+    "grpc": "^1.18.0",
     "opentracing": "^0.14.3",
     "ramda": "^0.26.1",
-    "x-grpc": "^0.9.3"
+    "x-grpc": "^0.9.4"
   }
 }
