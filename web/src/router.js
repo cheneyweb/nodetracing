@@ -5,6 +5,7 @@ import Dashboard from './views/Dashboard.vue'
 import Topology from './views/Topology.vue'
 import Service from './views/Service.vue'
 import Operation from './views/Operation.vue'
+import Setting from './views/Setting.vue'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/operation',
       name: 'operation',
       component: Operation
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
     }
   ]
 })

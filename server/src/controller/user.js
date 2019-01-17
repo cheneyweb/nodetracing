@@ -20,4 +20,14 @@ router.post('/login', function (ctx, next) {
     }
 })
 
+/**
+ * 变更认证
+ */
+router.post('/updateAuth', function (ctx, next) {
+    let inparam = ctx.request.body
+    Cache.username = inparam.username
+    Cache.password = inparam.password
+    ctx.body = true
+})
+
 module.exports = router

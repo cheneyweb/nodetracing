@@ -59,6 +59,10 @@ export default new Vuex.Store({
     async login(state, data) {
       const res = await axios.post(`${domain}/nodetracing/user/login`, data)
       return res.data
+    },
+    async updateAuth(state, data) {
+      const res = await axios.post(`${domain}/nodetracing/user/updateAuth`, data)
+      return res.data
     }
   }
 })
