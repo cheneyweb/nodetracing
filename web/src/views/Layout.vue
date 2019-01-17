@@ -2,7 +2,7 @@
   <div>
     <v-navigation-drawer v-model="drawer" clipped fixed app width="200" v-if="isShow">
       <v-list dense>
-        <v-list-tile>
+        <v-list-tile to="/home">
           <v-list-tile-action>
             <v-icon>dashboard</v-icon>
           </v-list-tile-action>
