@@ -84,7 +84,7 @@ const tracer = new nodetracing.Tracer({
 	serviceName: 'S1',      // 必须，服务名称
 	rpcAddress: 'localhost',// 必须，后台追踪收集服务地址
 
-	rpcPort: '36361',		// 可选，后台追踪收集服务端口，默认：36361
+	rpcPort: '36361',       // 可选，后台追踪收集服务端口，默认：36361
 	auto: true,             // 可选，是否启用自动追踪，默认：false
 	stackLog: false,        // 可选，是否记录详细堆栈信息（包括代码行号位置等，启用内存消耗较大），默认：false
 	maxDuration: 30000      // 可选，最大函数执行时间（垃圾回收时间间隔），默认：30000
