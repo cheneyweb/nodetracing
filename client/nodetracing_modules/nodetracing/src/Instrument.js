@@ -205,7 +205,7 @@ class Instrument {
                     routerMap.delete(key)
                 }
             })
-            console.log(`GC after：contextMap[${routerMap.size}]`)
+            routerMap.size && console.log(`GC after：routerMap[${routerMap.size}]`)
         }, tracer._config.maxDuration)
     }
 }

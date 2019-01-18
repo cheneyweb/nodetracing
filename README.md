@@ -95,6 +95,12 @@ const tracer = new nodetracing.Tracer({
 *由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针...*
 ### 3.1、async自动探针（支持async函数）
 ```js
+async function func1(){
+	...
+}
+async function func2(){
+	...
+}
 func1 = nodetracing.aop(func1)
 func2 = nodetracing.aop(func2)
 ...
@@ -213,4 +219,5 @@ client/example/example.js<br>
 	2019.01.15:UI接口请求增加TOKEN校验
 	2019.01.17:UI增加Dashboard和Setting
 	2019.01.18:UI的Dashboard页面完善
-	<!-- 2019.01.19:服务连接等待/重试实现 -->
+	2019.01.19:日志清理，GC优化
+	<!-- 2019.01.20:服务连接等待/重试实现 -->

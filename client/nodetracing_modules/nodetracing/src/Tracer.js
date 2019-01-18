@@ -57,7 +57,7 @@ class Tracer extends opentracing.Tracer {
                     contextMap.delete(key)
                 }
             })
-            console.log(`GC after：contextMap[${contextMap.size}]`)
+            contextMap.size && console.log(`GC after：contextMap[${contextMap.size}]`)
         }, this._config.maxDuration)
     }
     _startSpan(name, options) {

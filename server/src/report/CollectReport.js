@@ -8,11 +8,11 @@ class CollectReport extends Report {
         super(spans)
     }
     // 生成报告
-    async report() {
+    async report(reportRPC) {
         // 上报处理结果
         let reportData = { spans: JSON.stringify(this.spans) }
         try {
-            await global.reportRPC.invoke('report.Collect.upload', reportData, { ipv4: getIPv4() })
+            await reportRPC.invoke('report.Collect.upload', reportData, { ipv4: getIPv4() })
         } catch (error) {
             console.error(error)
         }
