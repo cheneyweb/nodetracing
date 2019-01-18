@@ -1,4 +1,6 @@
 # nodetracing
+[![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
+
 完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
 ![image](/web/public/img/demo-architecture.png)
 ![image](/web/public/img/demo-dashboard.png)
@@ -185,7 +187,7 @@ client/example/example.js<br>
 
 ## 支持与帮助
 
-虽然没有大型商业的支持，但是nodetracing也希望能持续坚持地完成它的使命
+如果NodeTracing对您有帮助，希望可以得到您的一颗Star
 
 ## 更新日志
 >
