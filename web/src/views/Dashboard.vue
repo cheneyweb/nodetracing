@@ -40,17 +40,33 @@
               tile
               flat
             >
-              <v-card-text>Cluster：{{stat.clusterCount}}</v-card-text>
+              <v-card-text>TracingCluster：{{stat.clusterCount}}</v-card-text>
             </v-card>
           </v-hover>
         </v-flex>
       </v-flex>
-      <v-flex xs5>
-        <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="name" open-all>
-          <template slot="prepend" slot-scope="{ item, open, leaf }">
-            <v-icon v-if="!item.file">{{ open ? 'mdi-folder-open' : 'mdi-folder' }}</v-icon>
-            <v-icon v-else>{{ files[item.file] }}</v-icon>
+      <v-flex xs5 mt-4>
+        <v-treeview
+          v-model="tree"
+          :items="stat.tree"
+          activatable
+          hoverable
+          item-key="name"
+          open-on-click
+          open-all
+          :open="open"
+        >
+          <template slot="prepend" slot-scope="{item}">
+            <v-icon @click="onClick(item)" v-if="item.name=='Services'">{{ 'device_hub' }}</v-icon>
+            <v-icon @click="onClick(item)" v-else-if="item.children">{{ 'scatter_plot' }}</v-icon>
+            <v-icon @click="onClick(item)" v-else>{{ 'view_list' }}</v-icon>
           </template>
+          <template slot="label" slot-scope="{item}">
+            <span @click="onClick(item)">{{item.name}}</span>
+          </template>
+          <!-- <template slot="append" slot-scope="{item}">
+            <span @click="onClick()">{{item.name}}</span>
+          </template>-->
         </v-treeview>
       </v-flex>
       <v-flex xs7>
@@ -69,47 +85,24 @@ export default {
     this.drawGauge();
   },
   data: () => ({
+    tree: [],
+    open: [],
     stat: {
       serviceCount: 0,
       operationCount: 0,
       clusterCount: 0,
-      durationAvg: 0
+      durationAvg: 0,
+      tree: []
     },
-    open: ["public"],
-    files: {
-      html: "mdi-language-html5",
-      js: "mdi-nodejs",
-      json: "mdi-json",
-      md: "mdi-markdown",
-      pdf: "mdi-file-pdf",
-      png: "mdi-file-image",
-      txt: "mdi-file-document-outline",
-      xls: "mdi-file-excel"
-    },
-    tree: [],
-    items: [
-      {
-        name: "services",
-        children: [
-          {
-            name: "s1",
-            children: [
-              {
-                name: "main"
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    icon: "device_hub",
+    gauge: {
+      name: "Avg：All Services"
+    }
   }),
   methods: {
     async getCount() {
       this.stat = await this.$store.dispatch("getCount", {});
-      this.drawGauge();
-    },
-    async getDuration() {
-      // let res = await this.$store.dispatch("spanDAG", { serviceName });
+      this.open = ["Services"];
       this.drawGauge();
     },
     // 绘制仪表盘
@@ -125,13 +118,13 @@ export default {
                 color: "white"
               }
             },
-            name: "Duration",
+            name: "Avg Duration",
             type: "gauge",
             radius: "85%",
             min: 0,
             max: 5000,
             detail: { formatter: "{value}ms" },
-            data: [{ value: this.stat.durationAvg, name: "Runtime" }],
+            data: [{ value: this.stat.durationAvg, name: this.gauge.name }],
             axisLine: {
               lineStyle: {
                 color: [[0.2, "#91c7ae"], [0.5, "#63869e"], [1, "#c23531"]]
@@ -140,6 +133,25 @@ export default {
           }
         ]
       });
+    },
+    async onClick(item) {
+      this.gauge.name =
+        item.name == "Services" ? "Avg：All Services" : `Avg：${item.name}`;
+      if (item.name == "Services") {
+        this.getCount();
+      } else if (item.children) {
+        let res = await this.$store.dispatch("getServiceAvg", {
+          serviceName: item.name
+        });
+        this.stat.durationAvg = res.durationAvg || 0;
+      } else {
+        let res = await this.$store.dispatch("getOperationAvg", {
+          serviceName: item.parent,
+          operationName: item.name
+        });
+        this.stat.durationAvg = res.durationAvg || 0;
+      }
+      this.drawGauge();
     }
   }
 };
