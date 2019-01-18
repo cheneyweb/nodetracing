@@ -50,6 +50,7 @@ class Tracer extends opentracing.Tracer {
         hook.enable()
         // GC
         this._config.maxDuration = this._config.maxDuration || 300000
+        let lastContextMapSize = 0
         setInterval(() => {
             let now = Date.now()
             contextMap.forEach((context, key) => {
@@ -57,7 +58,10 @@ class Tracer extends opentracing.Tracer {
                     contextMap.delete(key)
                 }
             })
-            contextMap.size && console.log(`GC after：contextMap[${contextMap.size}]`)
+            if (contextMap.size && contextMap.size > lastContextMapSize) {
+                console.log(`GC after：contextMap[${contextMap.size}]`)
+                lastContextMapSize = contextMap.size
+            }
         }, this._config.maxDuration)
     }
     _startSpan(name, options) {

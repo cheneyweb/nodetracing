@@ -83,7 +83,7 @@ if (REPORT_ADDR) {
             // 队列有数据，且处理池为空，生成报告上报
             let spanCount = Cache.spanQueue.length
             if (spanCount > 0 && Cache.spanArr.length == 0) {
-                console.time('单次上报')
+                console.time('请求单次上报')
                 // 出列
                 for (i = 0; i < spanCount; i++) {
                     Cache.spanArr.push(Cache.spanQueue.shift())
@@ -92,7 +92,7 @@ if (REPORT_ADDR) {
                 await new CollectReport(Cache.spanArr).report(reportRPC)
                 // 清空
                 Cache.spanArr = []
-                console.timeEnd('单次上报')
+                console.timeEnd('请求单次上报')
             }
         }, Math.ceil(Math.random() * REPORT_INTERVAL))
     })
