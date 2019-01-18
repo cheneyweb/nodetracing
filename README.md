@@ -1,6 +1,6 @@
 # nodetracing
 完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
-
+![image](/web/public/img/demo-architecture.png)
 ![image](/web/public/img/demo-dashboard.png)
 ![image](/web/public/img/demo-topology.png)
 ![image](/web/public/img/demo-service.png)
