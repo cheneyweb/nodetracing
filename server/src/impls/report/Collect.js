@@ -1,7 +1,10 @@
+const Cache = require('../../cache/Cache.js')
 const EChartReport = require('../../report/EChartReport.js')
 module.exports = {
   upload(call, cb) {
     let time1 = Date.now()
+    // 0、记录上报节点并认证
+    Cache.tracingCluster[call.metadata.get('ipv4')[0]] = Date.now()
     // 1、响应客户端
     cb(null, { res: `Y` })
     // 2、获取上报数据

@@ -6,9 +6,11 @@ const CollectReport = require('./src/report/CollectReport.js')
 const RPC_PORT = +process.env.RPC_PORT || 36361
 const WEB_PORT = +process.env.WEB_PORT
 const REPORT_ADDR = process.env.REPORT_ADDR
+
 const REPORT_INTERVAL = process.env.REPORT_INTERVAL || 5000
 const USERNAME = process.env.USERNAME || 'admin'
 const PASSWORD = process.env.PASSWORD || '123456'
+const TOKENKEY = process.env.TOKENKEY || '123456'
 
 // WebUI应用服务
 if (WEB_PORT) {
@@ -34,7 +36,7 @@ if (WEB_PORT) {
     app.use(mount('/', cors()))
     app.use(koaBody())
     // koa-xauth中间件
-    app.use(xauth({ secret: PASSWORD, pass: ["/nodetracing/user/login"] }))
+    app.use(xauth({ secret: TOKENKEY, pass: ["/nodetracing/user/login"] }))
     // koa-xcontroller中间件
     xcontroller.init(app, { controllerRoot: '/nodetracing', controllerDir: '/src/controller/' })
     app.listen(WEB_PORT)
@@ -44,6 +46,7 @@ if (WEB_PORT) {
     // 载入帐号密码
     Cache.username = USERNAME
     Cache.password = PASSWORD
+    Cache.tokenkey = TOKENKEY
     // 启动持久化
     LevelDB.init('_db')
     // 缓存数据加载-服务集合

@@ -16,7 +16,8 @@ router.get('/count', async (ctx, next) => {
         operationCount: 0,
         clusterCount: 0,
         durationAvg: 0,
-        tree: [{ name: 'Services', children: [] }]
+        tree: [{ name: 'Services', children: [] }],
+        tracingCluster: []
     }
     let pArr = []
     let durationCount = 0
@@ -37,6 +38,13 @@ router.get('/count', async (ctx, next) => {
             durationSum += span.durationMs
             durationCount++
         }
+    }
+    for (let key in Cache.tracingCluster) {
+        data.tracingCluster.push({
+            ipv4: key,
+            lastReport: Cache.tracingCluster[key]
+        })
+        data.clusterCount++
     }
     data.durationAvg = parseFloat((durationSum / durationCount).toFixed(2))
     ctx.body = data

@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken')
 router.post('/login', function (ctx, next) {
     let inparam = ctx.request.body
     if (Cache.username == inparam.username && bcrypt.compareSync(Cache.password, inparam.password)) {
-        ctx.body = jwt.sign({ username: Cache.username, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) }, Cache.password)
+        ctx.body = jwt.sign({ username: Cache.username, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) }, Cache.tokenkey)
     } else {
         ctx.body = false
     }

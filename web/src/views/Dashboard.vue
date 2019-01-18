@@ -5,6 +5,7 @@
         <v-flex d-flex xs4>
           <v-hover>
             <v-card
+              to="/service"
               slot-scope="{hover}"
               :class="`elevation-${hover?24:0}`"
               color="teal"
@@ -19,6 +20,7 @@
         <v-flex d-fle xs4>
           <v-hover>
             <v-card
+              to="/operation"
               slot-scope="{hover}"
               :class="`elevation-${hover?24:0}`"
               color="blue-grey"
@@ -40,7 +42,17 @@
               tile
               flat
             >
-              <v-card-text>TracingCluster：{{stat.clusterCount}}</v-card-text>
+              <v-card-text>
+                <v-tooltip bottom>
+                  <span slot="activator">TracingCluster：{{stat.clusterCount}}</span>
+                  <span>number of tracking nodes in operation：
+                    <p
+                      v-for="item in stat.tracingCluster"
+                      :key="item.ipv4"
+                    >{{item.ipv4}} [lastReport {{item.lastReport | formatDate}}]</p>
+                  </span>
+                </v-tooltip>
+              </v-card-text>
             </v-card>
           </v-hover>
         </v-flex>
@@ -77,9 +89,13 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
   created() {
     this.getCount();
+    setInterval(() => {
+      this.getCount();
+    }, 5000);
   },
   mounted() {
     this.drawGauge();
@@ -92,18 +108,27 @@ export default {
       operationCount: 0,
       clusterCount: 0,
       durationAvg: 0,
+      tracingCluster: [],
       tree: []
     },
+    clusterInfo: "",
     icon: "device_hub",
     gauge: {
       name: "Avg：All Services"
     }
   }),
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    }
+  },
   methods: {
     async getCount() {
-      this.stat = await this.$store.dispatch("getCount", {});
-      this.open = ["Services"];
-      this.drawGauge();
+      if (localStorage.getItem("token")) {
+        this.stat = await this.$store.dispatch("getCount", {});
+        this.open = ["Services"];
+        this.drawGauge();
+      }
     },
     // 绘制仪表盘
     async drawGauge(serviceName) {

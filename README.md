@@ -54,8 +54,11 @@ WEB_PORT=3636
 #追踪服务需要设置接收Span的RPC端口和上报Span的WEB服务地址
 RPC_PORT=36361
 REPORT_ADDR=localhost
+
 #追踪服务上报时间间隔，默认5000毫秒
 REPORT_INTERVAL=5000
+#服务接口TOKEN密钥
+TOKEN_KEY=tDTUusE2PWmKpIyK
 ```
 
 ### 2、后台集群（规划中...）
