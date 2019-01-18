@@ -1,11 +1,11 @@
 # nodetracing
 完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
 
-![image](http://github.com/cheneyweb/nodetracing/raw/master/web/public/img/demo-dashboard.png)
-![image](http://github.com/cheneyweb/nodetracing/raw/master/web/public/img/demo-topology.png)
-![image](http://github.com/cheneyweb/nodetracing/raw/master/web/public/img/demo-service.png)
-![image](http://github.com/cheneyweb/nodetracing/raw/master/web/public/img/demo-operation.png)
-![image](http://github.com/cheneyweb/nodetracing/raw/master/web/public/img/demo-span.png)
+![image](http://github.com/cheneyweb/nodetracing/raw/master/img/demo-dashboard.png)
+![image](http://github.com/cheneyweb/nodetracing/raw/master/img/demo-topology.png)
+![image](http://github.com/cheneyweb/nodetracing/raw/master/img/demo-service.png)
+![image](http://github.com/cheneyweb/nodetracing/raw/master/img/demo-operation.png)
+![image](http://github.com/cheneyweb/nodetracing/raw/master/img/demo-span.png)
 
 ## 项目起源
 nodetracing是完全支持[opentracing](http://opentracing.io)标准实现的分布式日志追踪系统
