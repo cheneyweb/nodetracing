@@ -55,16 +55,16 @@ npm run server
 ### 1.4、ENV说明
 ```shell
 #设置WEB端口即可启动可视化服务
-WEB_PORT=3636
+WEB_PORT=3636                 #若设置该环境变量端口，则会启动WEB可视化UI服务
 
 #追踪服务需要设置接收Span的RPC端口和上报Span的WEB服务地址
-RPC_PORT=36361
-REPORT_ADDR=localhost
+REPORT_ADDR=localhost         #必须
+RPC_PORT=36361                #可选，默认36361
 
-#追踪服务上报时间间隔，默认5000毫秒
-REPORT_INTERVAL=5000
+#追踪服务上报时间间隔
+REPORT_INTERVAL=5000          #可选，默认5000
 #服务接口TOKEN密钥
-TOKEN_KEY=tDTUusE2PWmKpIyK
+TOKEN_KEY=tDTUusE2PWmKpIyK    #可选，默认123456
 ```
 
 ### 2、后台集群（规划中...）
@@ -81,11 +81,13 @@ const nodetracing = require('nodetracing')
 ```
 ```js
 const tracer = new nodetracing.Tracer({
-	serviceName: 'S1',		// 服务名称
-	rpcAddress: 'localhost',// 后台追踪收集服务地址
-	auto: true,				// 是否启用自动追踪
-	stackLog: false,		// 是否记录详细堆栈信息（包括代码行号位置等，启用内存消耗较大）
-	maxDuration: 30000 		// 最大函数执行时间（垃圾回收时间间隔）
+	serviceName: 'S1',      // 必须，服务名称
+	rpcAddress: 'localhost',// 必须，后台追踪收集服务地址
+
+	rpcPort: '36361',		// 可选，后台追踪收集服务端口，默认：36361
+	auto: true,             // 可选，是否启用自动追踪，默认：false
+	stackLog: false,        // 可选，是否记录详细堆栈信息（包括代码行号位置等，启用内存消耗较大），默认：false
+	maxDuration: 30000      // 可选，最大函数执行时间（垃圾回收时间间隔），默认：30000
 })
 ```
 *由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针...*
