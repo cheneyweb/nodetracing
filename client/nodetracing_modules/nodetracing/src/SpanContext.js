@@ -7,10 +7,12 @@ class SpanContext extends opentracing.SpanContext {
         super()
         let references = []
         for (let reference of span._references) {
+            let referencedContext = reference.referencedContext()
+            // TODO 这里是否需要深度递归，或者是否可以只返回单层关系？
+            delete referencedContext.references
             references.push({
                 type: reference.type(),
-                // TODO 这里是否需要深度递归，或者是否可以只返回单层关系？
-                referencedContext: reference.referencedContext()
+                referencedContext: referencedContext
             })
         }
         this.serviceName = span.serviceName

@@ -86,7 +86,7 @@ if (REPORT_ADDR) {
             if (spanCount > 0 && Cache.spanPool.length == 0) {
                 console.time('请求单次上报')
                 // 出列
-                for (i = 0; i < spanCount; i++) {
+                for (i = 0; i < Math.min(spanCount, 10000); i++) {
                     Cache.spanPool.push(Cache.spanQueue.shift())
                 }
                 // 上报
