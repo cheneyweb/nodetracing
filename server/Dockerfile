@@ -1,5 +1,5 @@
 # FROM node
-FROM node:alpine
+FROM node:slim
 # 创建应用目录
 RUN mkdir -p /usr/node/nodetracing
 # 设置工作目录
