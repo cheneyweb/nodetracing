@@ -15,6 +15,7 @@ axios.interceptors.request.use(nodetracing.axiosMiddleware())
 const RPCClient = require('x-grpc').RPCClient
 const rpc = new RPCClient({ port: 3333, protosDir: "/example/grpc/protos/", implsDir: "/example/grpc/impls/", serverAddress: "localhost" })
 rpc.use(nodetracing.grpcClientMiddleware())
+rpc.connect()
 // ==========自动探针==========
 const appLocal = require('./app_local')
 
@@ -28,15 +29,22 @@ async function main() {
 }
 async function phase1() {
     await waitASecond(100)
-    await axios.get('http://localhost:1111/express')
+    try {
+        await axios.get('http://localhost:1111/express')
+    } catch (error) {
+        console.error(error)
+    }
 }
 async function phase2() {
-    await axios.get('http://localhost:2222/koa')
+    try {
+        await axios.get('http://localhost:2222/koa')
+    } catch (error) {
+        console.error(error)
+    }
     await waitASecond(100)
 }
 async function phase3() {
     await appLocal()
-    await rpc.connect()
     await rpc.invoke('demo.User.login', { username: 'cheney', password: '123456' })
     phase4()
 }
@@ -54,9 +62,10 @@ function waitASecond(waitTime) {
 }
 
 // 开始调用
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 100; i++) {
     setTimeout(() => {
         main()
+        // console.log(i)
     }, 0)
 }
 

@@ -219,5 +219,5 @@ client/example/example.js<br>
 	2019.01.15:UI接口请求增加TOKEN校验
 	2019.01.17:UI增加Dashboard和Setting
 	2019.01.18:UI的Dashboard页面完善
-	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.6.0发布
+	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.7.0发布
 	<!-- 2019.01.20:服务连接重试实现 -->

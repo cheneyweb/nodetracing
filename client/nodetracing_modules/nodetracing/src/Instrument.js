@@ -94,22 +94,23 @@ class Instrument {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
             let originalPath = req.originalUrl.split('?')[0]
+            let spanId = null
             // 请求解包
             if (req.headers && req.headers.nodetracing) {
                 // 获取父级上下文
                 let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, req.headers)
                 // 生成span
-                let operationName = `${req.method}${originalPath}`
-                let span = tracer.startSpan(operationName, { childOf: parent })
+                let span = tracer.startSpan(`${req.method}${originalPath}`, { childOf: parent })
                 span.setTag('category', 'http')
-                routerMap.set(operationName, span)
+                // 存储span
+                spanId = span.id
+                routerMap.set(span.id, span)
             }
             // 路由结束上报
             res.on('finish', () => {
-                let operationName = `${req.method}${originalPath}`
-                if (routerMap.get(operationName)) {
-                    routerMap.get(operationName).finish()
-                    routerMap.delete(operationName)
+                if (routerMap.get(spanId)) {
+                    routerMap.get(spanId).finish()
+                    routerMap.delete(spanId)
                 }
             })
             return next()
@@ -123,22 +124,23 @@ class Instrument {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
             let originalPath = ctx.originalUrl.split('?')[0]
+            let spanId = null
             // 请求解包
             if (ctx.header && ctx.header.nodetracing) {
                 // 获取父级上下文
                 let parent = tracer.extract(opentracing.FORMAT_HTTP_HEADERS, ctx.header)
                 // 生成span
-                let operationName = `${ctx.method}${originalPath}`
-                let span = tracer.startSpan(operationName, { childOf: parent })
+                let span = tracer.startSpan(`${ctx.method}${originalPath}`, { childOf: parent })
                 span.setTag('category', 'http')
-                routerMap.set(operationName, span)
+                // 存储span
+                spanId = span.id
+                routerMap.set(span.id, span)
             }
             // 路由结束上报
             ctx.res.on('finish', () => {
-                let operationName = `${ctx.method}${originalPath}`
-                if (routerMap.get(operationName)) {
-                    routerMap.get(operationName).finish()
-                    routerMap.delete(operationName)
+                if (routerMap.get(spanId)) {
+                    routerMap.get(spanId).finish()
+                    routerMap.delete(spanId)
                 }
             })
             return next()
@@ -168,21 +170,23 @@ class Instrument {
             let tracer = Instrument.tracer
             let routerMap = Instrument.routerMap
             let nodetracingMetadata = ctx.call.metadata.get('nodetracing')
-            let operationName = ctx.service.path
+            let spanId = null
             // 请求解包
             if (nodetracingMetadata) {
                 // 获取父级上下文
                 let parent = tracer.extract('FORMAT_GRPC_METADATA', ctx.call.metadata)
                 // 生成span
-                let span = tracer.startSpan(operationName, { childOf: parent })
+                let span = tracer.startSpan(ctx.service.path, { childOf: parent })
                 span.setTag('category', 'grpc')
-                routerMap.set(operationName, span)
+                // 存储span
+                spanId = span.id
+                routerMap.set(span.id, span)
             }
             await next()
             // 路由结束上报
-            if (nodetracingMetadata && routerMap.get(operationName)) {
-                routerMap.get(operationName).finish()
-                routerMap.delete(operationName)
+            if (nodetracingMetadata && routerMap.get(spanId)) {
+                routerMap.get(spanId).finish()
+                routerMap.delete(spanId)
             }
         }
     }
