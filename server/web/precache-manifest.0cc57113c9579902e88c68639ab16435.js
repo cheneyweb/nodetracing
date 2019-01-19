@@ -88,8 +88,8 @@ self.__precacheManifest = [
     "url": "/nodetracing/web/js/chunk-vendors~793fb972.e6a9527e.js"
   },
   {
-    "revision": "27165be0159d17047b9c",
-    "url": "/nodetracing/web/js/chunk-vendors~87de5440.0c61f303.js"
+    "revision": "c0884ede9d90c005af48",
+    "url": "/nodetracing/web/js/chunk-vendors~87de5440.ae412db0.js"
   },
   {
     "revision": "70a97f0b908370c2bb42",
@@ -192,7 +192,7 @@ self.__precacheManifest = [
     "url": "/nodetracing/web/js/chunk-vendors~fd542d86.636d51fd.js"
   },
   {
-    "revision": "5eb0321a2b31ddaa68dd8a60556ec6f6",
+    "revision": "adec01c9b7765260460ea6192361290f",
     "url": "/nodetracing/web/index.html"
   },
   {
@@ -212,15 +212,15 @@ self.__precacheManifest = [
     "url": "/nodetracing/web/img/demo-service.png"
   },
   {
+    "revision": "5e51fceed437407dcb105fe26e34449f",
+    "url": "/nodetracing/web/img/demo-architecture.png"
+  },
+  {
     "revision": "fd56b0fc68d4ea605dcb719b8ecd5f45",
     "url": "/nodetracing/web/img/demo-operation.png"
   },
   {
     "revision": "8bc11e97c8966ec41d4d674b533512d0",
     "url": "/nodetracing/web/img/demo-span.png"
-  },
-  {
-    "revision": "5e51fceed437407dcb105fe26e34449f",
-    "url": "/nodetracing/web/img/demo-architecture.png"
   }
 ];

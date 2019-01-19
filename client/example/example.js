@@ -62,7 +62,7 @@ function waitASecond(waitTime) {
 }
 
 // 开始调用
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 20; i++) {
     setTimeout(() => {
         main()
         // console.log(i)
