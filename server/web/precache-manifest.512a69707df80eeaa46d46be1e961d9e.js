@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "7cf9ef74808341724fe0",
-    "url": "/nodetracing/web/js/app~748942c6.7b77fabb.js"
+    "revision": "486311d93ec1d682e7b2",
+    "url": "/nodetracing/web/js/app~748942c6.3764fb1f.js"
   },
   {
     "revision": "56b36afc6a244817dc5e",
@@ -192,11 +192,35 @@ self.__precacheManifest = [
     "url": "/nodetracing/web/js/chunk-vendors~fd542d86.636d51fd.js"
   },
   {
-    "revision": "b0ed2bff63fe597138d4f6d88c9bdd8f",
+    "revision": "5eb0321a2b31ddaa68dd8a60556ec6f6",
     "url": "/nodetracing/web/index.html"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/nodetracing/web/robots.txt"
+  },
+  {
+    "revision": "c52ab3855d55e5320508dd226f9450a2",
+    "url": "/nodetracing/web/img/demo-topology.png"
+  },
+  {
+    "revision": "5a2fe5c10c6424aa9d0339de94f5f01f",
+    "url": "/nodetracing/web/img/demo-dashboard.png"
+  },
+  {
+    "revision": "679f7f99377d8427f24252413a0276ac",
+    "url": "/nodetracing/web/img/demo-service.png"
+  },
+  {
+    "revision": "fd56b0fc68d4ea605dcb719b8ecd5f45",
+    "url": "/nodetracing/web/img/demo-operation.png"
+  },
+  {
+    "revision": "8bc11e97c8966ec41d4d674b533512d0",
+    "url": "/nodetracing/web/img/demo-span.png"
+  },
+  {
+    "revision": "5e51fceed437407dcb105fe26e34449f",
+    "url": "/nodetracing/web/img/demo-architecture.png"
   }
 ];

@@ -104,7 +104,7 @@ export default {
     async getServiceOperations(e) {
       this.loading = true;
       let res = await this.$store.dispatch("getServiceOperations", {
-        serviceName: this.selectedService
+        serviceName: e
       });
       this.operations = res;
       // 默认选中第一个操作

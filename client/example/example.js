@@ -54,4 +54,10 @@ function waitASecond(waitTime) {
 }
 
 // 开始调用
-main()
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+        main()
+    }, 0)
+}
+
+
