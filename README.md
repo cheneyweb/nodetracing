@@ -69,7 +69,7 @@ REPORT_INTERVAL=5000          #可选，默认5000
 TOKEN_KEY=tDTUusE2PWmKpIyK    #可选，默认123456
 ```
 
-### 2、后台集群（规划中...）
+### 2、后台集群
 ```shell
 #docker compose
 docker-compose -f "docker-compose.yml" up -d
@@ -219,5 +219,5 @@ client/example/example.js<br>
 	2019.01.15:UI接口请求增加TOKEN校验
 	2019.01.17:UI增加Dashboard和Setting
 	2019.01.18:UI的Dashboard页面完善
-	2019.01.19:日志清理，GC优化
+	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.6.0发布
 	<!-- 2019.01.20:服务连接重试实现 -->

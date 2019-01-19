@@ -21,13 +21,9 @@ services:
     networks:
       - nodetracing_overlay
     environment:
-      - 'RPC_PORT=36361'
       - 'REPORT_ADDR=nodetracing-web'
     deploy:
       replicas: 2
-#卷集合
-volumes:
-  portainer:
 #网络集合
 networks:
   nodetracing_overlay:
