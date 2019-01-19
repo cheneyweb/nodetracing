@@ -18,7 +18,6 @@ if (WEB_PORT) {
     // 启动上报服务
     const reportServer = new RPCServer({ port: 36362, protosDir: '/src/protos/', implsDir: '/src/impls/' })
     reportServer.listen()
-    console.info('WEB服务\nNodeTracing-Report服务已启动【端口：36362】')
 
     // 启动WEB服务
     const staticRoot = '/nodetracing/web/'									    // web服务根目录
@@ -41,8 +40,10 @@ if (WEB_PORT) {
     // koa-xcontroller中间件
     xcontroller.init(app, { controllerRoot: '/nodetracing', controllerDir: '/src/controller/' })
     app.listen(WEB_PORT)
-    console.info(`NodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
-    console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】`)
+
+    console.info(`WEB服务\nNodeTracing-WEB应用服务启动【访问：http://localhost:${WEB_PORT}/nodetracing/web/index.html】`)
+    console.info('NodeTracing-Report服务启动【端口：36362】')
+    // console.warn(`NodeTracing-API接口服务启动【路径：localhost:${WEB_PORT}/nodetracing/MODULE_NAME/*】`)
 
     // 载入帐号密码
     Cache.username = USERNAME
@@ -77,23 +78,25 @@ if (REPORT_ADDR) {
     console.info(`节点服务\nNodeTracing-RPC服务节点启动【端口：${RPC_PORT}】`)
     // 连接上报服务
     new RPCClient({ port: 36362, protosDir: '/src/protos/', serverAddress: REPORT_ADDR }).connect().then((reportRPC) => {
-        console.info(`NodeTracing-Report服务已连接【${REPORT_ADDR}:36362】`)
+        console.info(`NodeTracing-Report服务连接【${REPORT_ADDR}:36362】`)
         // 定时上报
         setInterval(async () => {
             // 队列有数据，且处理池为空，生成报告上报
             let spanCount = Cache.spanQueue.length
-            if (spanCount > 0 && Cache.spanArr.length == 0) {
+            if (spanCount > 0 && Cache.spanPool.length == 0) {
                 console.time('请求单次上报')
                 // 出列
                 for (i = 0; i < spanCount; i++) {
-                    Cache.spanArr.push(Cache.spanQueue.shift())
+                    Cache.spanPool.push(Cache.spanQueue.shift())
                 }
                 // 上报
-                await new CollectReport(Cache.spanArr).report(reportRPC)
+                await new CollectReport(Cache.spanPool).report(reportRPC)
                 // 清空
-                Cache.spanArr = []
+                Cache.spanPool = []
                 console.timeEnd('请求单次上报')
             }
         }, Math.ceil(Math.random() * REPORT_INTERVAL))
+    }).catch((err) => {
+        console.error(err)
     })
 }

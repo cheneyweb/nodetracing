@@ -5,7 +5,7 @@ module.exports = {
     tokenkey: null,
     // span收集队列/处理池
     spanQueue: [],
-    spanArr: [],
+    spanPool: [],
     // 服务节点数组/图
     serviceSet: null,   // 启动时从持久化中加载
     serviceDAG: null,   // 启动时从持久化中加载，{ data: [], links: [], categories: [], legend: { data: [] } }

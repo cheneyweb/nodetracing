@@ -220,4 +220,4 @@ client/example/example.js<br>
 	2019.01.17:UI增加Dashboard和Setting
 	2019.01.18:UI的Dashboard页面完善
 	2019.01.19:日志清理，GC优化
-	<!-- 2019.01.20:服务连接等待/重试实现 -->
+	<!-- 2019.01.20:服务连接重试实现 -->

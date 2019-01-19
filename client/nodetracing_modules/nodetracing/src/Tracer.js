@@ -22,7 +22,9 @@ class Tracer extends opentracing.Tracer {
             serverAddress: config.rpcAddress || 'localhost'
         }).connect().then((rpc) => {
             this._rpc = rpc
-            console.info(`NodeTracing-Client已连接服务节点【${config.rpcAddress}:36361】`)
+            console.info(`NodeTracing-Client连接服务节点【${config.rpcAddress}:36361】`)
+        }).catch((err) => {
+            console.error(err)
         })
 
         config.auto && this._auto()
@@ -51,16 +53,28 @@ class Tracer extends opentracing.Tracer {
         // GC
         this._config.maxDuration = this._config.maxDuration || 300000
         let lastContextMapSize = 0
+        let routerMap = Instrument.routerMap
         setInterval(() => {
-            let now = Date.now()
-            contextMap.forEach((context, key) => {
-                if (context.isGC && (now - context.span.startMs > this._config.maxDuration)) {
-                    contextMap.delete(key)
-                }
-            })
+            // contextMap
             if (contextMap.size && contextMap.size > lastContextMapSize) {
+                let now = Date.now()
+                contextMap.forEach((context, key) => {
+                    if (context.isGC && (now - context.span.startMs > this._config.maxDuration)) {
+                        contextMap.delete(key)
+                    }
+                })
                 console.log(`GC after：contextMap[${contextMap.size}]`)
                 lastContextMapSize = contextMap.size
+            }
+            // routerMap
+            if (routerMap && routerMap.size) {
+                let now = Date.now()
+                routerMap.forEach((context, key) => {
+                    if (now - context.span.startMs > this._config.maxDuration) {
+                        routerMap.delete(key)
+                    }
+                })
+                console.log(`GC after：routerMap[${routerMap.size}]`)
             }
         }, this._config.maxDuration)
     }

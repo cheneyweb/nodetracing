@@ -1,11 +1,10 @@
 const Cache = require('../../cache/Cache.js')
 module.exports = {
   async upload(call, cb) {
-    // 1、响应客户端
     // console.log(call.request)
-    cb(null, { res: `Y` })
-
-    // 2、span压入队列
+    // 0、响应客户端
+    cb(null, { res: 'Y' })
+    // 1、span处理
     let span = call.request
     // span.tracer = JSON.parse(span.tracer)
     span.tags = JSON.parse(span.tags)
@@ -13,6 +12,7 @@ module.exports = {
     span.references = JSON.parse(span.references)
     span.startMs = +span.startMs
     span.finishMs = +span.finishMs
+    // 2、span压入队列
     Cache.spanQueue.push(span)
   }
 }
