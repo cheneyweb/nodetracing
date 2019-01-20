@@ -1,3 +1,32 @@
+<!-- TOC -->
+
+- [nodetracing](#nodetracing)
+    - [项目起源](#项目起源)
+    - [设计理念](#设计理念)
+    - [使用说明](#使用说明)
+        - [1、实施步骤](#1实施步骤)
+        - [1.1、快速开始-后台单例（PORT：3636，36361，36362）](#11快速开始-后台单例port36363636136362)
+        - [1.2、快速开始-单独启动WebUI服务（PORT：3636，36362）](#12快速开始-单独启动webui服务port363636362)
+        - [1.3、快速开始-单独启动追踪服务（PORT：36361）](#13快速开始-单独启动追踪服务port36361)
+        - [1.4、ENV说明](#14env说明)
+        - [2、Docker Swarm集群部署](#2docker-swarm集群部署)
+        - [3、安装探针](#3安装探针)
+        - [3.1、探针初始化（在应用入口首行）](#31探针初始化在应用入口首行)
+        - [3.2、async自动探针（支持async函数）](#32async自动探针支持async函数)
+        - [3.3、http请求自动探针（axios）](#33http请求自动探针axios)
+        - [3.4、http响应自动探针（koa/express）](#34http响应自动探针koaexpress)
+        - [3.5、grpc-client自动探针（原生）](#35grpc-client自动探针原生)
+        - [3.6、grpc-server自动探针（原生）](#36grpc-server自动探针原生)
+        - [3.7、grpc-client自动探针（x-grpc框架）](#37grpc-client自动探针x-grpc框架)
+        - [3.8、grpc-server自动探针（x-grpc框架）](#38grpc-server自动探针x-grpc框架)
+        - [4、手动探针](#4手动探针)
+        - [4.1、HTTP远程手动探针](#41http远程手动探针)
+        - [4.1、GRPC远程手动探针](#41grpc远程手动探针)
+        - [5、探针使用例子](#5探针使用例子)
+    - [支持与帮助](#支持与帮助)
+    - [更新日志](#更新日志)
+
+<!-- /TOC -->
 # nodetracing
 [![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
 
@@ -39,20 +68,18 @@ nodetracing会从开发工作者和运维工作者的角度出发，尽可能简
 - 针对需要追踪的应用布置探针 > 
 
 然后伴随应用的运行，由可视化WebUI界面展示追踪信息
-### 1.1、后台单例-快速开始（PORT：3636，36361，36362）
+### 1.1、快速开始-后台单例（PORT：3636，36361，36362）
 ```shell
 cd server && npm run standalone
 ```
 >open browser http://localhost:3636/nodetracing/web/index.html
-### 1.2、单独启动后台WebUI服务（PORT：3636，36362）
+### 1.2、快速开始-单独启动WebUI服务（PORT：3636，36362）
 ```shell
-cd server
-npm run web
+cd server && npm run web
 ```
-### 1.3、单独启动后台追踪服务（PORT：36361）
+### 1.3、快速开始-单独启动追踪服务（PORT：36361）
 ```shell
-cd server
-npm run server
+cd server && npm run server
 ```
 ### 1.4、ENV说明
 ```shell
@@ -69,19 +96,23 @@ REPORT_INTERVAL=5000          #可选，默认5000
 TOKEN_KEY=tDTUusE2PWmKpIyK    #可选，默认123456
 ```
 
-### 2、后台集群
+### 2、Docker Swarm集群部署
+[DockerHub：nodetracing-image](https://hub.docker.com/r/cheney/nodetracing)
 ```shell
 #docker compose
 docker-compose -f "docker-compose.yml" up -d
+
 #docker stack
 docker stack deploy --prune -c docker-compose.yml nodetracing
 ```
 
-### 3、探针初始化（在应用入口首行）
+### 3、安装探针
+```shell
+npm i nodetracing
+```
+### 3.1、探针初始化（在应用入口首行）
 ```js
 const nodetracing = require('nodetracing')
-```
-```js
 const tracer = new nodetracing.Tracer({
 	serviceName: 'S1',      // 必须，服务名称
 	rpcAddress: 'localhost',// 必须，后台追踪收集服务地址
@@ -93,7 +124,7 @@ const tracer = new nodetracing.Tracer({
 })
 ```
 *由此便完成了nodetracing的加载工作，接下来您可以根据您的服务类型选择以下自动探针/手动探针...*
-### 3.1、async自动探针（支持async函数）
+### 3.2、async自动探针（支持async函数）
 ```js
 async function func1(){
 	...
@@ -105,24 +136,24 @@ func1 = nodetracing.aop(func1)
 func2 = nodetracing.aop(func2)
 ...
 ```
-### 3.2、http请求自动探针（axios）
+### 3.3、http请求自动探针（axios）
 ```js
 axios.interceptors.request.use(nodetracing.axiosMiddleware())
 ```
-### 3.3、http响应自动探针（koa/express）
+### 3.4、http响应自动探针（koa/express）
 ```js
 //koa
 app.use(nodetracing.koaMiddleware())
 //express
 app.use(nodetracing.expressMiddleware())
 ```
-### 3.4、grpc-client自动探针（原生）
+### 3.5、grpc-client自动探针（原生）
 ```js
 const grpc = require('grpc')
 const Service = grpc.loadPackageDefinition(...)[packageName][serviceName]
 new Service("ip:port", grpc.credentials.createInsecure(), { interceptors: [nodetracing.grpcClientMiddleware()] })
 ```
-### 3.5、grpc-server自动探针（原生）
+### 3.6、grpc-server自动探针（原生）
 ```js
 const grpc = require('grpc')
 const interceptors = require('@echo-health/grpc-interceptors')
@@ -130,7 +161,7 @@ let server = new grpc.Server()
 server = interceptors.serverProxy(this.server)
 server.use(nodetracing.grpcClientMiddleware())
 ```
-### 3.6、grpc-client自动探针（x-grpc框架）
+### 3.7、grpc-client自动探针（x-grpc框架）
 ```js
 const RPCClient = require('x-grpc').RPCClient
 const rpcClient = new RPCClient({
@@ -143,7 +174,7 @@ rpcClient.use(nodetracing.grpcClientMiddleware())
 rpcClient.connect()
 let result = await rpcClient.invoke('demo.User.login', { username: 'cheney', password: '123456' } , optionMeta?)
 ```
-### 3.7、grpc-server自动探针（x-grpc框架）
+### 3.8、grpc-server自动探针（x-grpc框架）
 ```js
 const RPCServer = require('x-grpc').RPCServer
 const rpcServer = new RPCServer({
@@ -220,4 +251,5 @@ client/example/example.js<br>
 	2019.01.17:UI增加Dashboard和Setting
 	2019.01.18:UI的Dashboard页面完善
 	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.8.0发布
-	<!-- 2019.01.20:服务连接重试实现 -->
+	2019.01.20:文档更新
+	<!-- 2019.01.21:服务连接重试实现 -->
