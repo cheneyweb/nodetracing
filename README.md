@@ -1,3 +1,7 @@
+# nodetracing
+[![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
+
+完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
 <!-- TOC -->
 
 - [nodetracing](#nodetracing)
@@ -27,10 +31,7 @@
     - [更新日志](#更新日志)
 
 <!-- /TOC -->
-# nodetracing
-[![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
 
-完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
 ![image](/web/public/img/demo-architecture.png)
 ![image](/web/public/img/demo-dashboard.png)
 ![image](/web/public/img/demo-topology.png)
