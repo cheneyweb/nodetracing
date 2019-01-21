@@ -1,24 +1,30 @@
 {
   "name": "nodetracing-server",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
   "main": "app.js",
   "scripts": {
+    "standalone": "RPC_PORT=36361 WEB_PORT=3636 REPORT_ADDR=localhost node app.js",
+    "server": "RPC_PORT=36361 REPORT_ADDR=localhost node app.js",
+    "web": "WEB_PORT=3636 node app.js",
     "start": "node app.js"
   },
   "author": "cheneyxu",
-  "license": "ISC",
+  "license": "Apache License 2.0",
   "dependencies": {
     "@koa/cors": "^2.2.3",
-    "config": "^3.0.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.4.0",
     "koa": "^2.6.2",
     "koa-body": "^4.0.6",
     "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
+    "koa-xauth": "^1.2.0",
     "koa-xcontroller": "^1.2.0",
+    "level": "^5.0.0-0",
     "lodash": "^4.17.11",
     "opentracing": "^0.14.3",
-    "x-grpc": "^0.9.1"
+    "x-grpc": "^0.9.5"
   }
 }

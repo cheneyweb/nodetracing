@@ -1,0 +1,33 @@
+version: '3.7'
+#服务集合
+services:
+  #nodetracing可视化服务
+  nodetracing-web:
+    image: cheney/nodetracing:latest
+    volumes:
+        - ./server/_db:/usr/node/nodetracing/_db #host_db:container_db
+    ports:
+      - "3636:3636"
+      - "36362:36362"
+    networks:
+      - nodetracing_overlay
+    environment:
+      - 'WEB_PORT=3636'
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+  #nodetracing追踪节点集群
+  nodetracing:
+    image: cheney/nodetracing:latest
+    ports:
+      - "36361:36361"
+    networks:
+      - nodetracing_overlay
+    environment:
+      - 'REPORT_ADDR=nodetracing-web' #nodetracing-web
+    deploy:
+      replicas: 2
+#网络集合
+networks:
+  nodetracing_overlay:

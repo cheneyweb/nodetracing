@@ -1,4 +1,5 @@
 const Cache = require('../cache/Cache.js')
+const LevelDB = require('../cache/LevelDB.js')
 // 路由相关
 const Router = require('koa-router')
 // 日志相关
@@ -10,10 +11,12 @@ const _ = require('lodash')
 /**
  * 跟踪根Span
  */
-router.get('/tracer/:spanId', function (ctx, next) {
+router.get('/tracer/:spanId', async (ctx, next) => {
     let serviceArr = Array.from(Cache.serviceSet)
-    let depth = Cache.spanTracerMap[ctx.params.spanId].depth
-    let spans = _.orderBy(Cache.spanTracerMap[ctx.params.spanId].spanArr, ['depth', 'startMs'])
+    let spanArrRes = await LevelDB.queryByPrefix(ctx.params.spanId)
+    let spans = _.orderBy(spanArrRes, ['depth', 'startMs'])
+    let maxDepthSpan = _.maxBy(spanArrRes, 'depth')
+    let depth = maxDepthSpan ? maxDepthSpan.depth : 0
     let spanArr = []
     for (let span of spans) {
         spanArr.push({
@@ -25,7 +28,7 @@ router.get('/tracer/:spanId', function (ctx, next) {
             serviceName: span.serviceName
         })
     }
-    ctx.body = { depth, serviceArr, spanArr: spanArr }
+    ctx.body = { depth, serviceArr, spanArr }
 })
 
 // 递归根span所有关系

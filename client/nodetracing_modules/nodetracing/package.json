@@ -1,0 +1,27 @@
+{
+  "name": "nodetracing",
+  "version": "0.8.0",
+  "description": "nodetracing的nodejs客户端,完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱",
+  "keywords": [
+    "opentracing",
+    "probe",
+    "tracer",
+    "nodejs"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cheneyweb/nodetracing"
+  },
+  "author": "cheneyxu",
+  "license": "Apache License 2.0",
+  "dependencies": {
+    "grpc": "^1.18.0",
+    "opentracing": "^0.14.3",
+    "ramda": "^0.26.1",
+    "x-grpc": "^0.9.5"
+  }
+}

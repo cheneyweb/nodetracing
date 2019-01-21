@@ -15,8 +15,8 @@ module.exports = {
     }
   },
 
-  baseUrl: undefined,
-  outputDir: undefined,
+  publicPath: '/nodetracing/web/',
+  outputDir: '../server/web/',
   assetsDir: undefined,
   runtimeCompiler: undefined,
   parallel: undefined,

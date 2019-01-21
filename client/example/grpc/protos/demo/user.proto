@@ -1,0 +1,18 @@
+syntax = "proto3";
+package demo;
+
+// 服务定义
+service User {
+  rpc login (LoginReq) returns (LoginRes) {}
+}
+
+// 请求返回定义
+message LoginReq {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginRes {
+  string code = 1;
+  string res = 2;
+}

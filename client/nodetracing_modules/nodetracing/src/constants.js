@@ -1,0 +1,3 @@
+module.exports = {
+    FORMAT_GRPC_METADATA: 'FORMAT_GRPC_METADATA'
+}

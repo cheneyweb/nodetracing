@@ -1,5 +1,6 @@
 const Report = require('./Report.js')
 const Cache = require('../cache/Cache.js')
+const LevelDB = require('../cache/LevelDB.js')
 /**
  * Echart图表报告输出
  */
@@ -9,109 +10,45 @@ class EChartReport extends Report {
     }
     // 生成报告
     gen() {
-        const spanArr = Cache.spanArr
-        const spanMap = Cache.spanMap
-        const spanTracerMap = Cache.spanTracerMap
         const serviceSet = Cache.serviceSet
         const serviceMap = Cache.serviceMap
         const serviceDAG = Cache.serviceDAG
-        for (let span of spanArr) {
-            // Map加入span
-            spanMap[span.id] = span
-            // 获取serviceName
+        // 初始化收集缓存，用于批量持久化
+        const ops = []
+        for (let span of this.spans) {
             let serviceName = span.serviceName
-            // 获取service
-            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, rootSpanMap: {}, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: [{ data: [] }] } }
-            // 筛选根span
-            filterRootSpan(service, span)
-            // 跟踪根span
-            tracerRootSpan(spanTracerMap, span)
+            let service = serviceMap[serviceName] = serviceMap[serviceName] || { serviceName, spanSet: new Set(), spanDAG: { data: [], links: [], categories: [], legend: { data: [] } } }
             // 绘制service的spanDAG
-            let serviceReferenceArr = drawSpanDAG(service, span)
+            let serviceReferenceContext = drawSpanDAG(service, span)
             // 绘制serviceDAG
-            !serviceSet.has(serviceName) && drawServiceDAG(serviceDAG, service, serviceReferenceArr)
-            // 集合加入service
-            serviceSet.add(serviceName)
+            if (!serviceSet.has(serviceName)) {
+                drawServiceDAG(serviceDAG, service, serviceReferenceContext)
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_SET}${serviceName}`, value: serviceName })
+                serviceSet.add(serviceName)
+            }
+            // 根span额外处理
+            if (span.depth == 0) {
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_OPERATION}${serviceName}.${span.operationName}`, value: span.operationName })
+                ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_OPERATION_SPAN}${serviceName}.${span.operationName}.${4102416000000 - span.startMs}.${span.originId}`, value: span })
+            }
+            ops.push({ type: 'put', key: `${span.originId}.${span.id}`, value: span })
+            ops.push({ type: 'put', key: `${LevelDB.PREFIX_SERVICE_MAP}${serviceName}`, value: { serviceName, spanSet: Array.from(service.spanSet), spanDAG: service.spanDAG } })
         }
-        // 重置span池
-        Cache.spanArr = []
-        // console.log(JSON.stringify(spanTracerMap))
-        // console.log(JSON.stringify(serviceMap))
-        // console.log(JSON.stringify(serviceDAG))
+        // 所有服务节点拓扑图持久化更新
+        ops.push({ type: 'put', key: 'sdag', value: serviceDAG })
+        // 异步持久化
+        LevelDB.db.batch(ops)
     }
 }
 
-// 筛选根span
-function filterRootSpan(service, span) {
-    if (span.depth == 0) {
-        service.rootSpanMap[span.operationName] = service.rootSpanMap[span.operationName] || []
-        service.rootSpanMap[span.operationName].push(span)
-    }
-}
-// 从根span出发，跟踪关联所有span集合
-function tracerRootSpan(spanTracerMap, span) {
-    // 接收根span，完善数组首位
-    if (span.depth == 0) {
-        if (!spanTracerMap[span.originId]) {
-            spanTracerMap[span.originId] = { depth: 0, spanArr: [span] }
-        } else {
-            spanTracerMap[span.originId].spanArr[0] = span
-        }
-    }
-    // 非根span，加入跟踪队列
-    else {
-        // 若根span未到达，先虚拟
-        if (!spanTracerMap[span.originId]) {
-            spanTracerMap[span.originId] = { depth: 0, spanArr: [{ id: span.originId }] }
-        }
-        // 更新跟踪深度
-        if (spanTracerMap[span.originId].depth < span.depth) {
-            spanTracerMap[span.originId].depth = span.depth
-        }
-        // 跟踪集合增加
-        spanTracerMap[span.originId].spanArr.push(span)
-    }
-}
-// 绘制所有服务拓扑图
-function drawServiceDAG(serviceDAG, service, serviceReferenceArr) {
-    let { data, links, categories, legendData } = serviceDAG
-    // let category = span.tags['category']
-    data.push({
-        name: service.serviceName,
-        // category
-    })
-    for (let serviceReference of serviceReferenceArr) {
-        // 是否存在重复关联
-        let isRepeat = false
-        for (let link of links) {
-            if (link.source == serviceReference.source && link.target == serviceReference.target) {
-                isRepeat = true
-            }
-        }
-        // 添加关联
-        if (!isRepeat) {
-            links.push({
-                source: serviceReference.source,
-                target: serviceReference.target
-                // category
-            })
-        }
-    }
-    // if (legendData.indexOf(category) == -1) {
-    //     legendData.push(category)
-    //     categories.push({
-    //         name: category
-    //     })
-    // }
-}
 // 绘制单服务Span拓扑图
 function drawSpanDAG(service, span) {
-    let serviceReferenceArr = []
+    let serviceReferenceContext = { category: span.tags.category, referenceArr: [] }
     let spanSet = service.spanSet
     // 确保span节点不重复
     if (!spanSet.has(span.operationName)) {
         let { data, links, categories, legend } = service.spanDAG
-        let category = span.tags['category']
+        let category = span.tags.category
         // 节点
         data.push({
             name: span.operationName,
@@ -124,22 +61,53 @@ function drawSpanDAG(service, span) {
                 target: span.operationName,
                 category
             })
-            serviceReferenceArr.push({
+            serviceReferenceContext.referenceArr.push({
                 source: reference.referencedContext.serviceName,
-                target: span.serviceName
+                target: span.serviceName,
+                category
             })
         }
         // 类目
-        if (legend[0].data.indexOf(category) == -1) {
-            legend[0].data.push(category)
-            categories.push({
-                name: category
-            })
+        if (legend.data.indexOf(category) == -1) {
+            legend.data.push(category)
+            categories.push({ name: category })
         }
         // 集合加入span
         spanSet.add(span.operationName)
     }
-    return serviceReferenceArr
+    return serviceReferenceContext
+}
+// 绘制所有服务拓扑图
+function drawServiceDAG(serviceDAG, service, serviceReferenceContext) {
+    let { data, links, categories, legend } = serviceDAG
+    let category = serviceReferenceContext.category
+    let referenceArr = serviceReferenceContext.referenceArr
+    data.push({
+        name: service.serviceName,
+        category
+    })
+    for (let serviceReference of referenceArr) {
+        // 是否存在重复关联
+        let isRepeat = false
+        for (let link of links) {
+            if (link.source == serviceReference.source && link.target == serviceReference.target) {
+                isRepeat = true
+            }
+        }
+        // 添加关联
+        if (!isRepeat) {
+            links.push({
+                source: serviceReference.source,
+                target: serviceReference.target,
+                category
+            })
+        }
+    }
+    // 类目
+    if (legend.data.indexOf(category) == -1) {
+        legend.data.push(category)
+        categories.push({ name: category })
+    }
 }
 
 module.exports = EChartReport

@@ -10,7 +10,7 @@ const router = new Router()
  * 获取所有服务
  */
 router.get('/', function (ctx, next) {
-    ctx.body = Array.from(Cache.serviceSet)
+    ctx.body = Array.from(Cache.serviceSet).sort()
 })
 
 module.exports = router

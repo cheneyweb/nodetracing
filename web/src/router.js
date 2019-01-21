@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Login from './views/Login.vue'
+import Login from './views/Login.vue'
+import Dashboard from './views/Dashboard.vue'
 import Topology from './views/Topology.vue'
 import Service from './views/Service.vue'
 import Operation from './views/Operation.vue'
+import Setting from './views/Setting.vue'
 
 Vue.use(Router)
 
@@ -12,13 +14,13 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-      component: Topology
+      component: Login
     },
-    // {
-    //   path: '/home',
-    //   name: 'home',
-    //   component: Home
-    // },
+    {
+      path: '/home',
+      name: 'home',
+      component: Dashboard
+    },
     {
       path: '/topology',
       name: 'topology',
@@ -33,6 +35,11 @@ export default new Router({
       path: '/operation',
       name: 'operation',
       component: Operation
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
     }
   ]
 })

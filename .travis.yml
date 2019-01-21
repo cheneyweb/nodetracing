@@ -1,0 +1,19 @@
+language: node_js
+node_js: 'node'
+env:
+  - IMAGE_NAME=cheney/nodetracing
+services:
+  - docker
+#指定分支
+branches:
+  only:
+  - master
+#执行构建
+script:
+  - docker build -t $IMAGE_NAME ./server
+#推送至DockerHub
+after_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push $IMAGE_NAME
+
+  

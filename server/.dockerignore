@@ -1,0 +1,14 @@
+.git
+.gitignore
+.travis.yml
+package-lock.json
+stack-compose.yml
+client.js
+*Dockerfile*
+*docker-compose*
+node_modules
+grpc_modules
+sh
+mq
+_db
+README.md
