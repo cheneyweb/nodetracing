@@ -1,4 +1,5 @@
 # nodetracing
+![image](/web/public/img/icons/mstile-150x150.png)
 [![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
 
 完全支持[opentracing](http://opentracing.io)标准实现的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
