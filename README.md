@@ -1,7 +1,7 @@
 # nodetracing
 [![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
 
-完全支持opentracing的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
+完全支持[opentracing](http://opentracing.io)标准实现的分布式追踪系统，致力于最简部署，最低侵入，最快开箱
 <!-- TOC -->
 
 - [nodetracing](#nodetracing)
@@ -40,8 +40,6 @@
 ![image](/web/public/img/demo-span.png)
 
 ## 项目起源
-nodetracing是完全支持[opentracing](http://opentracing.io)标准实现的分布式日志追踪系统
-
 nodetracing由[nodejs](https://nodejs.org)编写，基于[opentracing-javascript](https://github.com/opentracing/opentracing-javascript)的API开发
 
 对比同类项目包括
@@ -221,6 +219,9 @@ client/example/app_express.js<br>
 client/example/app_grpc.js<br>
 client/example/app_manual.js<br>
 client/example/example.js<br>
+```shell
+cd client && npm run start
+```
 
 
 ## 支持与帮助
@@ -253,4 +254,5 @@ client/example/example.js<br>
 	2019.01.18:UI的Dashboard页面完善
 	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.8.0发布
 	2019.01.20:文档更新
-	<!-- 2019.01.21:服务连接重试实现 -->
+	2019.01.21:文档更新
+	<!-- 2019.01.22:服务连接重试实现 -->
