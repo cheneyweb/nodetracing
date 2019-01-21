@@ -10,7 +10,7 @@
     "start": "node app.js"
   },
   "author": "cheneyxu",
-  "license": "ISC",
+  "license": "Apache License 2.0",
   "dependencies": {
     "@koa/cors": "^2.2.3",
     "bcryptjs": "^2.4.3",
