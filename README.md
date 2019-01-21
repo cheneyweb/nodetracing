@@ -57,7 +57,7 @@ Compare similar projects including：
 - [jaeger](https://github.com/jaegertracing/jaeger)
 - [skywalking](https://github.com/apache/incubator-skywalking)
 
-These above titans are indeed powerful, but also cumbersome and rigid in some way, so a out of box, lightweight and flexible "swissgear" is more likely met my imagination about an advanced distributed tracking system. now here it is, the name is Nodetrcing.
+These above titans are indeed powerful, but also cumbersome and rigid in some way, so an out-of-the-box, lightweight and flexible "swissgear" is more likely met my imagination about an advanced distributed tracking system. now here it is, the name is Nodetrcing.
 
 ## Design Concept
 Nodetracing will be as simple and efficient as possible from the perspective of developer and manager. Progressive is the ultimate goal
