@@ -5,8 +5,10 @@
 
 [中文](/web/public/doc/README.md)
 
-Distributed tracking system which is a fully implementation of [opentracing](http://opentracing.io) standard. committed to the simplest deployment, the lowest invasion, the fastest out of the box
-design goals:
+Distributed tracking system which is a fully implementation of [opentracing](http://opentracing.io) standard. 
+
+Design goals:
+
  - Simplicy for deployment
  - Non-invasion for development
  - Out-of-the-box for most scenarios
