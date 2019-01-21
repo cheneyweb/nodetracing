@@ -33,6 +33,7 @@ Distributed tracking system implemented by the fully [opentracing](http://opentr
         - [4.1、GRPC remote manual probe](#41grpc-remote-manual-probe)
         - [5、Examples of Probe Use](#5examples-of-probe-use)
     - [Support & Help](#support--help)
+- [License](#license)
 
 <!-- /TOC -->
 
@@ -229,3 +230,6 @@ cd client && npm run start
 
 ## Support & Help
 if nodetracing is helpful to you, I hope to get a Star of yours ：）
+
+# License
+[Apache License 2.0](/LICENSE)
