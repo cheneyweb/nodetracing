@@ -5,16 +5,19 @@
 
 [中文](/web/public/doc/README.md)
 
-Distributed tracking system implemented by the fully [opentracing](http://opentracing.io) standard, committed to the simplest deployment, the lowest invasion, the fastest out of the box
-
+Distributed tracking system which is a fully implementation of [opentracing](http://opentracing.io) standard. committed to the simplest deployment, the lowest invasion, the fastest out of the box
+design goals:
+ - Simplicy for deployment
+ - Non-invasion for development
+ - Out-of-the-box for most scenarios
 <!-- TOC -->
 
 - [nodetracing](#nodetracing)
     - [Project Origin](#project-origin)
     - [Design Concept](#design-concept)
     - [Instructions](#instructions)
-        - [1、Implementation Steps](#1implementation-steps)
-        - [1.1、Quick Start - Standalone（PORT：3636，36361，36362）](#11quick-start---standaloneport36363636136362)
+        - [1、Quick Setups](#1quick-setups)
+        - [1.1、Quick Start - Standalone backend（PORT：3636，36361，36362）](#11quick-start---standaloneport36363636136362)
         - [1.2、Quick Start - WebUIServer（PORT：3636，36362）](#12quick-start---webuiserverport363636362)
         - [1.3、Quick Start - TracingServer（PORT：36361）](#13quick-start---tracingserverport36361)
         - [1.4、ENV](#14env)
@@ -52,14 +55,14 @@ Compare similar projects including：
 - [jaeger](https://github.com/jaegertracing/jaeger)
 - [skywalking](https://github.com/apache/incubator-skywalking)
 
-The above projects are indeed powerful, but also heavy and heavy, so a set out of the box, streamlined and lightweight, and a flexible distributed tracking system is the goal of nodetracing
+These above titans are indeed powerful, but also cumbersome and rigid in some way, so a out of box, lightweight and flexible "swissgear" is more likely met my imagination about an advanced distributed tracking system. now here it is, the name is Nodetrcing.
 
 ## Design Concept
-Nodetracing will be as simple and efficient as possible from the developers and managers. Progressive is the ultimate goal
+Nodetracing will be as simple and efficient as possible from the perspective of the developer and manager. Progressive is the ultimate goal
 
-Written by nodejs, cross-platform, easy to start, and fully support container cluster deployment, while decoupling front and background, it is expected to provide API interface in addition to providing UI interface
+Written in nodejs, cross-platform, easy to start, and fully support container cluster deployment, while decoupling frontend and backend, it is expected to provide API interface in addition to providing UI interface
 
-Probe support for different language clients, automatic probes are preferred (as little as possible intrusion code), at this stage, priority support for automatic probes：
+Probe supports multiple language clients, automatic probes are preferred (less code intrusion), at this stage, priority support for automatic probes：
 
 - nodejs（support：async function，axios，koa，express，grpc original，x-grpc framewrok）
 - java（planing...）
