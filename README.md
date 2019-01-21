@@ -62,7 +62,7 @@ These above titans are indeed powerful, but also cumbersome and rigid in some wa
 ## Design Concept
 Nodetracing will be as simple and efficient as possible from the perspective of developer and manager. Progressive is the ultimate goal
 
-Written in nodejs, cross-platform, easy to start, and fully support container cluster deployment, while decoupling frontend and backend, it is expected to provide API interface in addition to UI interface
+Written in nodejs, cross-platform, easy to start, and fully support container cluster deployment, with decoupled frontend and backend, planning to provide API aside from UI
 
 Probe supports multiple language clients, automatic probes are preferred (less code intrusion), at this stage, priority support for automatic probes：
 
