@@ -2,6 +2,7 @@
 <img src="https://raw.githubusercontent.com/cheneyweb/nodetracing/master/web/public/img/icons/mstile-150x150.png" alt="nodetracing logo" height="100px" align="right" />
 
 [![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
+[![OpenTracing Badge](https://img.shields.io/badge/OpenTracing-enabled-blue.svg)](http://opentracing.io)
 
 [中文](/web/public/doc/README.md)
 
@@ -18,8 +19,8 @@ Design goals:
     - [Project Origin](#project-origin)
     - [Design Concept](#design-concept)
     - [Instructions](#instructions)
-        - [1、Quick Setups](#1quick-setups)
-        - [1.1、Quick Start - Standalone backend（PORT：3636，36361，36362）](#11quick-start---standaloneport36363636136362)
+        - [1、Implementation Steps](#1implementation-steps)
+        - [1.1、Quick Start - Standalone（PORT：3636，36361，36362）](#11quick-start---standaloneport36363636136362)
         - [1.2、Quick Start - WebUIServer（PORT：3636，36362）](#12quick-start---webuiserverport363636362)
         - [1.3、Quick Start - TracingServer（PORT：36361）](#13quick-start---tracingserverport36361)
         - [1.4、ENV](#14env)
@@ -31,8 +32,8 @@ Design goals:
         - [3.4、Http-response automatic probe (koa/express)](#34http-response-automatic-probe-koaexpress)
         - [3.5、Grpc-client automatic probe (original)](#35grpc-client-automatic-probe-original)
         - [3.6、Grpc-server automatic probe (original)](#36grpc-server-automatic-probe-original)
-        - [3.7、grpc-client automatic probe（x-grpc framewrok）](#37grpc-client-automatic-probex-grpc-framewrok)
-        - [3.8、grpc-server automatic probe（x-grpc framewrok）](#38grpc-server-automatic-probex-grpc-framewrok)
+        - [3.7、Grpc-client automatic probe（x-grpc framewrok）](#37grpc-client-automatic-probex-grpc-framewrok)
+        - [3.8、Grpc-server automatic probe（x-grpc framewrok）](#38grpc-server-automatic-probex-grpc-framewrok)
         - [4、Manual probe](#4manual-probe)
         - [4.1、HTTP remote manual probe](#41http-remote-manual-probe)
         - [4.1、GRPC remote manual probe](#41grpc-remote-manual-probe)
@@ -170,7 +171,7 @@ let server = new grpc.Server()
 server = interceptors.serverProxy(this.server)
 server.use(nodetracing.grpcClientMiddleware())
 ```
-### 3.7、grpc-client automatic probe（x-grpc framewrok）
+### 3.7、Grpc-client automatic probe（x-grpc framewrok）
 ```js
 const RPCClient = require('x-grpc').RPCClient
 const rpcClient = new RPCClient({
@@ -183,7 +184,7 @@ rpcClient.use(nodetracing.grpcClientMiddleware())
 rpcClient.connect()
 let result = await rpcClient.invoke('demo.User.login', { username: 'cheney', password: '123456' } , optionMeta?)
 ```
-### 3.8、grpc-server automatic probe（x-grpc framewrok）
+### 3.8、Grpc-server automatic probe（x-grpc framewrok）
 ```js
 const RPCServer = require('x-grpc').RPCServer
 const rpcServer = new RPCServer({

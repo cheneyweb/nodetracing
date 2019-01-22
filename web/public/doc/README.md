@@ -2,6 +2,7 @@
 <img src="https://raw.githubusercontent.com/cheneyweb/nodetracing/master/web/public/img/icons/mstile-150x150.png" alt="nodetracing logo" height="100px" align="right" />
 
 [![Build Status](https://travis-ci.com/cheneyweb/nodetracing.svg?branch=master)](https://travis-ci.com/cheneyweb/nodetracing)
+[![OpenTracing Badge](https://img.shields.io/badge/OpenTracing-enabled-blue.svg)](http://opentracing.io)
 
 [EN](/README.md)
 
@@ -263,4 +264,5 @@ cd client && npm run start
 	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.8.0发布
 	2019.01.20:文档更新
 	2019.01.21:文档更新
-	<!-- 2019.01.22:服务连接重试实现 -->
+	2019.01.23:add project to opentracing registry
+	<!-- 2019.01.24:服务连接重试实现 -->
