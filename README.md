@@ -235,7 +235,7 @@ cd client && npm run start
 ```
 
 ## Support & Help
-if nodetracing is helpful to you, I hope to get a Star of yours ：）
+If nodetracing is helpful to you, I hope to get a Star of yours ：）
 
 # License
 [Apache License 2.0](/LICENSE)
