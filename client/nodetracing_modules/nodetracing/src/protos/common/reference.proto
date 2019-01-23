@@ -1,0 +1,10 @@
+syntax = "proto3";
+package common;
+
+import "./referencedContext.proto";
+
+// Tag通用定义
+message Reference {
+    string type = 1;
+    ReferencedContext referencedContext = 2;
+}

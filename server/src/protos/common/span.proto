@@ -1,0 +1,22 @@
+syntax = "proto3";
+package common;
+
+import "./tag.proto";
+import "./log.proto";
+import "./reference.proto";
+
+// Span通用定义
+message Span {
+    string serviceName = 1;
+    string id = 2;
+    string operationName = 3;
+    double startMs = 4;
+    double finishMs = 5;
+    uint32 durationMs = 6;
+    Tag tags = 7;
+    repeated Log logs = 8;
+    repeated Reference references = 9;
+    string originId = 10;
+    string parentId = 11;
+    uint32 depth = 12;
+}

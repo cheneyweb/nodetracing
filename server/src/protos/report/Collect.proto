@@ -1,6 +1,8 @@
 syntax = "proto3";
 package report;
 
+import "../common/span.proto";
+
 // 服务定义
 service Collect {
   rpc upload (ReportReq) returns (ReportRes) {}
@@ -8,7 +10,7 @@ service Collect {
 
 // 请求返回定义
 message ReportReq {
-  string spans = 1;   // json
+  repeated Span spans = 1;
 }
 
 message ReportRes {

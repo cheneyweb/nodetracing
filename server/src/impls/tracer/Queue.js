@@ -1,19 +1,18 @@
 const Cache = require('../../cache/Cache.js')
 module.exports = {
   async upload(call, cb) {
-    // console.log(call.request)
     // 0、响应客户端
     cb(null, { res: 'Y' })
     // 1、span处理
-    let span = call.request
+    // let span = call.request.span
     // span.tracer = JSON.parse(span.tracer)
-    span.tags = JSON.parse(span.tags)
-    span.logs = JSON.parse(span.logs)
-    span.references = JSON.parse(span.references)
-    span.startMs = +span.startMs
-    span.finishMs = +span.finishMs
+    // span.tags = JSON.parse(span.tags)
+    // span.logs = JSON.parse(span.logs)
+    // span.references = JSON.parse(span.references)
+    // span.startMs = +span.startMs
+    // span.finishMs = +span.finishMs
     // 2、span压入队列
-    Cache.spanQueue.push(span)
+    Cache.spanQueue.push(call.request.span)
   }
 }
 

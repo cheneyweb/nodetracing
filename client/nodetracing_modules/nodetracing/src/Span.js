@@ -46,15 +46,15 @@ class Span extends opentracing.Span {
         }
     }
     // 建议属性{error.kind,error.object,event,message,stack}，event必须
-    _log(fields, timestamp = Date.now()) {
-        this.logs.push({ fields, timestamp })
+    _log(fields = {}, timestamp = Date.now()) {
+        this.logs.push({ fields: JSON.stringify(fields), timestamp })
     }
     _finish(finishTime) {
         this.finishMs = finishTime || Date.now()
         this.durationMs = this.finishMs - this.startMs
         // 上报
         // console.log(JSON.stringify(this.context()))
-        this._tracer._rpc.invoke('tracer.Span.upload', this.context()).catch((err) => {
+        this._tracer._rpc.invoke('tracer.Queue.upload', { span: this.context() }).catch((err) => {
             console.error(err)
         })
     }

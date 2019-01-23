@@ -1,0 +1,8 @@
+syntax = "proto3";
+package common;
+
+// Log通用定义
+message Log {
+    string fields = 1;      // json
+    double timestamp = 2;
+}

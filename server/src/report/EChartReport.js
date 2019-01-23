@@ -55,17 +55,19 @@ function drawSpanDAG(service, span) {
             category
         })
         // 关联
-        for (let reference of span.references) {
-            links.push({
-                source: reference.referencedContext.operationName,
-                target: span.operationName,
-                category
-            })
-            serviceReferenceContext.referenceArr.push({
-                source: reference.referencedContext.serviceName,
-                target: span.serviceName,
-                category
-            })
+        if (span.references) {
+            for (let reference of span.references) {
+                links.push({
+                    source: reference.referencedContext.operationName,
+                    target: span.operationName,
+                    category
+                })
+                serviceReferenceContext.referenceArr.push({
+                    source: reference.referencedContext.serviceName,
+                    target: span.serviceName,
+                    category
+                })
+            }
         }
         // 类目
         if (legend.data.indexOf(category) == -1) {

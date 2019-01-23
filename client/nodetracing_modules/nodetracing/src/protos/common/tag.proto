@@ -1,0 +1,7 @@
+syntax = "proto3";
+package common;
+
+// Tag通用定义
+message Tag {
+    string category = 1;
+}

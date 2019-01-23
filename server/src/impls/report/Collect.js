@@ -8,9 +8,9 @@ module.exports = {
     // 1、响应客户端
     cb(null, { res: 'Y' })
     // 2、获取上报数据
-    let spans = JSON.parse(call.request.spans)
+    // let spans = JSON.parse(call.request.spans)
     // 3、生成报告
-    new EChartReport(spans).gen()
+    new EChartReport(call.request.spans).gen()
     console.timeEnd('接收单次上报')
   }
 }

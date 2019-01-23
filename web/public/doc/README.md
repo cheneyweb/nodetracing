@@ -264,5 +264,5 @@ cd client && npm run start
 	2019.01.19:日志清理，GC优化，集群部署，nodetracing-client 0.8.0发布
 	2019.01.20:文档更新
 	2019.01.21:文档更新
-	2019.01.23:add project to opentracing registry
+	2019.01.23:add project to opentracing registry，优化grpc传输，精简计算复杂度，nodetracing-client 0.9.0发布
 	<!-- 2019.01.24:服务连接重试实现 -->

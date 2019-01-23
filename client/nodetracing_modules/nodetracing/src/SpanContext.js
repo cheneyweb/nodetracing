@@ -21,9 +21,9 @@ class SpanContext extends opentracing.SpanContext {
         this.startMs = span.startMs
         this.finishMs = span.finishMs
         this.durationMs = span.durationMs
-        this.tags = JSON.stringify(span.tags)
-        this.logs = JSON.stringify(span.logs)
-        this.references = JSON.stringify(references)
+        this.tags = span.tags
+        this.logs = span.logs
+        this.references = references
         this.originId = span.originId
         this.parentId = span.parentId
         this.depth = span.depth
