@@ -52,9 +52,10 @@ if (WEB_PORT) {
     // 启动持久化
     LevelDB.init('_db')
     // 缓存数据加载-服务集合
+    console.info('数据加载\n')
     LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_SET).then((resArr) => {
         Cache.serviceSet = new Set(resArr)
-        console.info(`数据加载\nNodeTracing-WEB数据加载【服务集合】`)
+        console.info(`NodeTracing-WEB数据加载【服务集合】`)
     })
     // 缓存数据加载-服务拓扑
     LevelDB.queryByPrefix(LevelDB.PREFIX_SERVICE_DAG).then((resArr) => {
